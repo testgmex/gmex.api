@@ -3,7 +3,14 @@
 *NOTE*
   这里是个人收集整理的版本，非官方正式版。
   官方请认准： https://www.gmex.io
-  
+
+
+### clone
+git clone https://github.com/hexiaoyuan/gmex.api.git your-gmex-api
+
+
+### sub dir
+
 + gmex-unofficial-api-docs
 
   API的详细文档说明。简单使用请用 REST，深度使用请直接用 Wetbsocket 方式。
