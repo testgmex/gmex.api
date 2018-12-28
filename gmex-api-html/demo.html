@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <title>GAEALIB API DEMO</title>
+
+    <!-- <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.slim.min.js"></script> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+    <script src='./jquery_3.3.1.slim.min.js'></script>
+
+    <!-- <script src="http://novicelab.org/jsonabc/dist/jsonabc.js"></script> -->
+    <script src="./jsonabc.js"></script>
+
+    <script src="./md5.js"></script>
+    <script src='./gaealib_api.js'></script>
+
+    <style>
+        #my_textarea_output {
+        font-family: monospace;
+    }
+    </style>
+
+    <script>
+
+        var g_config_log = {
+            'debug': true,
+            'info': true,
+            'warn': true,
+            'error': true,
+        }
+        function G_LOG(flag, obj, noDate) {
+            if (!g_config_log.hasOwnProperty(flag)) return;
+            if (!g_config_log[flag]) return;
+
+            var logElement = document.getElementById("my_textarea_output")
+            var s = "";
+            if (!noDate) {
+                var dt = new Date();
+                s = dt.format("[hh:mm:ss.SSS] ");
+            }
+
+            var text = typeof (obj) == 'object' ? JSONStringify(obj) : obj;
+            s = logElement.value + s + text + "\n"
+
+            var K_MAX_TXT_SIZE = 512 * 1024 * 1024
+            if (s.length > K_MAX_TXT_SIZE) {
+                var index = s.indexOf("\n", s.length - K_MAX_TXT_SIZE)
+                if (index > 0) s = s.substr(index + 1)
+            }
+            logElement.value = s;
+            logElement.scrollTop = logElement.scrollHeight
+        }
+        function clearOutputTxt() {
+            document.getElementById("my_textarea_output").value = "";
+        }
+
+    </script>
+
+    <script>
+
+        var jsonabc = require('jsonabc');
+        GAEA = gaea;
+
+        var api_market = new GAEA() // 行情
+        var api_trade = new GAEA()  // 交易
+        var udata = {   // 用于测试程序缓冲用户数据
+            oid: 0
+        };
+        var orderl2 = { asks: [], bids: [] };
+        orderl2Map = {};
+
+        api_market.on("close", () => {   // 行情断线处理
+            G_LOG("info", "[+] market closed");
+        })
+        api_market.on("error", (err) => {// 行情连接出错处理
+            G_LOG("error", `[-] market error: ${JSONStringify(err)}`);
+        })
+
+        api_trade.on("close", () => {    // 交易断线处理
+            G_LOG("info", "[+] trade closed");
+        })
+        api_trade.on("error", (err) => { // 交易连接出错处理
+            G_LOG("error", `[-] trade error: ${JSONStringify(err)}`);
+        })
+
+        var request_trade = function (route, data, cb) {
+            if (!api_trade.is_connected() ) {
+                console.log('[-] sorry, api_trade is not connected!');
+                return;
+            }
+            console.log(`[request_trade] >> >> [${Date.now()}] ${route} : ${JSONStringify(data)}`);
+            api_trade.request(route, data, cb || function (ret) {
+                console.log(`[on.request_trade] << `, ret)
+            });
+        }
+
+        var request_market = function (route, data, cb) {
+            if (!api_market.is_connected() ) {
+                console.log('[-] sorry, api_market is not connected!');
+                return;
+            }
+            console.log(`[request_market]>> [${Date.now()}] ${route} : ${JSONStringify(data)}`);
+            api_market.request(route, data, cb || function (ret) {
+                console.log(`[on.request_market] << `, ret)
+            });
+        }
+
+
+        var market_login = function (url) {
+            if (!url || url.length < 2) return
+
+            G_LOG("info", "[+] market login ...");
+            $("input[id^='mc']").prop("checked", false);
+            // gaea market 连接及一些初始化操作
+            api_market.init({ ws_url: url }, () => {
+                // tick行情
+                api_market.on("tick", function (ret) {
+                    console.log(`[on.market.tick] << `, ret)
+                });
+                // 成交记录行情
+                api_market.on("trade", function (ret) {
+                    console.log(`[on.market.trade] << `, ret)
+                });
+
+                // orderl2行情
+                api_market.on("orderl2", function (ret) {
+                    console.log(`[on.market.orderl2] << `, ret)
+                    if (ret.At == 0) {
+                        console.log(`[on.market.orderl2] begin << `, orderl2)
+                        orderl2 = { asks: [], bids: [], inited: false };
+                    } else if (ret.At == 1) {
+                        L2Init();
+                        orderl2.inited = true;
+                        console.log(`[on.market.orderl2] end << `, orderl2)
+                    } else {
+                        var a = orderl2Map[ret.Prz]
+                        if (!a) {
+                            if (ret.Sz)
+                                orderl2Map[ret.Prz] = ret;
+                        } else {
+                            if (ret.Sz)
+                                orderl2Map[ret.Prz] = ret;
+                            else if (ret.Dir == a.Dir)
+                                delete orderl2Map[ret.Prz];
+                        }
+                    }
+                });
+                // order20行情
+                api_market.on("order20", function (ret) {
+                    console.log(`[on.market.order20] << `, ret)
+                });
+
+                // kline行情
+                api_market.on("kline", function (ret) {
+                    console.log(`[on.market.kline] << `, ret)
+                });
+                // 指数行情
+                api_market.on("index", function (ret) {
+                    console.log(`[on.market.index] << `, ret)
+                });
+
+                request_market('GetAssetD', {}, (ret) => {
+                    console.log(`[on.market.GetAssetD] << `, ret)
+                    if (ret.code == 0) {
+                        // 简易合约列表
+                        udata.instsplus = ret.data; // 合约详情
+                        udata.insts = [];
+                        for (var i = 0; i < udata.instsplus.length; i++) {
+                            udata.insts.push(udata.instsplus[i].Sym)
+                        }
+                        udata.insts.sort();
+                        $("#me1").val(udata.insts)
+                        $("#me3").val(udata.insts[0])
+                        $("#me4").val(udata.insts[0])
+                        $("#te1").val(udata.insts[0])
+                        $("#te11").val(udata.insts[0])
+                        G_LOG("debug", `[on.market.GetAssetD]<< ${JSONStringify(udata.insts)}`)
+                    }else {
+                        G_LOG("warn", `[on.market.GetAssetD]<< error, ret=${JSONStringify(ret)}`)
+                    }
+                })
+                request_market('GetCompositeIndex', {}, (ret) => {
+                    console.log(`[on.market.GetCompositeIndex] << `, ret)
+                    if (ret.code == 0) {
+                        // 简易合约列表
+                        udata.indexs = ret.data;
+                        $("#me2").val(udata.indexs)
+                        G_LOG("debug", `[on.market.GetCompositeIndex]<< ${JSONStringify(udata.indexs)}`)
+                    }else {
+                        G_LOG("warn", `[on.market.GetCompositeIndex]<< error,ret=${JSONStringify(ret)}`)
+                    }
+                })
+            });
+        }
+
+        var trade_login = function (url, uname, apikey, apisecret) {
+            if (!url || url.length < 2 || 
+                !uname || uname.length < 2 || 
+                !apikey || apikey.length < 2 ||
+                !apisecret || apisecret.length < 2) 
+            {
+                console.log(`[-] invalid url or uname or apikey or apisecret ...`)
+                return
+            }
+            console.log(`[+] trade login: ${uname}, apikey: ${apikey}, apisecret: ${apisecret} ...`)
+            // gaea trade 连接及一些初始化操作
+            api_trade.init({ ws_url: url, api_secret: apisecret}, () => {
+                G_LOG("debug", "[+] trade connected")
+                var msg = {
+                    UserName: uname,
+                    UserCred: apikey,
+                }
+                request_trade('Login', msg, (ret) => {
+                    G_LOG("debug", `<< ${JSONStringify(ret)}`)
+                    if (ret.code == 0) {
+                        // 用户id
+                        udata.uid = ret.data.UserId;
+                        //G_LOG("debug", `[+] << trade-login ok, uid=${udata.uid}`)
+
+                        // 订单更新
+                        api_trade.on("onOrder", function (ret) {
+                            console.log(`[on.trade.order] << `, ret)
+                        });
+                        // 持仓更新
+                        api_trade.on("onPosition", function (ret) {
+                            console.log(`[on.trade.position] << `, ret)
+                        });
+                        // 钱包更新
+                        api_trade.on("onWallet", function (ret) {
+                            console.log(`[on.trade.wallet] << `, ret)
+                        });
+                        // 成交更新
+                        api_trade.on("onTrade", function (ret) {
+                            console.log(`[on.trade.trade] << `, ret)
+                        });
+                    }
+                })
+            });
+        }
+
+        // orderl2行情 由 orderl2Map 转 orderl2
+        function L2Init() {
+            orderl2.asks = []
+            orderl2.bids = []
+            for (var i in orderl2Map) {
+                var o = orderl2Map[i]
+                if (o.Dir == 1)
+                    orderl2.bids.push(o)
+                else
+                    orderl2.asks.push(o)
+            }
+            orderl2.bids.sort((a, b) => { return b.Prz - a.Prz })
+            orderl2.asks.sort((a, b) => { return a.Prz - b.Prz })
+        }
+
+        var contents = {
+            "1": {
+                idx: -1,
+                list: [ 'wss://market01.gmex.io/v1/market', 'wss://api-market.gmex.io/v1/market' ]
+            },
+            "2": {
+                idx: -1,
+                list: [ 'wss://trade01.gmex.io/v1/trade', 'wss://api-trade.gmex.io/v1/trade']
+            },
+        };
+        function changeContent(id, cid) {
+            var a = contents[id]
+            if (a) {
+                a.idx++;
+                a.idx = a.idx % a.list.length
+                document.getElementById(cid).value = a.list[a.idx % a.list.length];
+            }
+        }
+
+
+        //------------- 辅助功能集 ----------------
+        Date.prototype.format = function (format) {
+            var o = {
+                "Y+": this.getYear(),
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S+": this.getMilliseconds() //millisecond
+            }
+
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    if (k === "S+")
+                        format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("000" + o[k]).substr(("" + o[k]).length));
+                    else
+                        format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
+
+        String.prototype.format = function (args) {
+            var result = this;
+            if (arguments.length > 0) {
+                if (arguments.length == 1 && typeof (args) == "object") {
+                    for (var key in args) {
+                        if (args[key] != undefined) {
+                            var reg = new RegExp("({" + key + "})", "g");
+                            result = result.replace(reg, args[key]);
+                        }
+                    }
+                }
+                else {
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (arguments[i] != undefined) {
+                            var reg = new RegExp("({(" + i + ")})", "g");
+                            result = result.replace(reg, arguments[i]);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        function JSONStringify(obj) {
+            var str = obj
+            switch (typeof obj) {
+                case 'object':
+                    str = JSON.stringify(obj)
+                case 'string':
+                    return jsonabc.sort(str, true).replace(/[ \n\r]/g, "");
+                case 'number':
+                    return String(obj)
+                default:
+                    return "JSONStringify error!"
+            }
+
+        }
+
+
+        //=========================================
+        // 各种操作
+        function MarketLogin() {
+            market_login(document.getElementById('login1').value);
+        }
+        function MarketClose() {
+            api_market.close();
+        }
+        function TradeLogin() {
+            trade_login(document.getElementById('login2').value, 
+                document.getElementById('login_uname').value, 
+                document.getElementById('login_api_key').value, 
+                document.getElementById('login_api_secret').value);
+        }
+        function TradeClose() {
+            api_trade.close();
+        }
+        function queryServerTime() {
+            var route = 'Time'
+            request_market(route, Date.now(), (ret) => {
+                G_LOG("debug", `[market.${route}]<< ${JSONStringify(ret)} cost:${Date.now() - Number(ret.data.data)} ms`)
+            })
+            request_trade(route, Date.now(), (ret) => {
+                G_LOG("debug", `[trade.${route}]<< ${JSONStringify(ret)} cost:${Date.now() - Number(ret.data.data)} ms`)
+            })
+        }
+
+    </script>
+</head>
+
+<body>
+    <div style="font-family:courier">
+
+        <div style="overflow-y: auto; width:100%;height:390px">
+            <form id="myForm0">
+                <table id="table0" border="1" width="100%">
+                    <tr>
+                        <td align=center width=100>系统</td>
+                        <td align=center><b>GAEA平台API功能接口DEMO，请使用chrome，并打开console查看结果输出.</b></td>
+                    </tr>
+                    <tr>
+                        <td align=center width=100>测试</td>
+                        <td>
+                            帐号:<input id="login_uname" type="text" value="<your-email@domain.com>"style="width:180px" spellcheck="false" />
+                            API-KEY:<input id="login_api_key" type="text" value="<api-key>" style="width:220px" spellcheck="false" />
+                            API-SECRET:<input id="login_api_secret" type="text" value="<api-secret>" style="width:420px" spellcheck="false"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align=center width=100>登录</td>
+                        <td>
+                            <input type="button" value="MarketUrl:" onclick="changeContent(1,'login1')" />
+                            <input id="login1" type="text" value="" style="width:250px" />
+                            <input type="button" value="行情登录" onclick="MarketLogin()" />
+                            <input type="button" value="行情关闭" onclick="MarketClose()" />
+                            &nbsp;&nbsp;&lt;&lt;|&gt;&gt;&nbsp;&nbsp;
+                            <input type="button" value="TradeUrl:" onclick="changeContent(2,'login2')" />
+                            <input id="login2" type="text" value="" style="width:250px" />
+                            <input type="button" value="交易登录" onclick="TradeLogin()" />
+                            <input type="button" value="交易关闭" onclick="TradeClose()" />
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align=center width=100>行情</td>
+                        <td>
+                            <div style="line-height:30px">
+                                <label>可订阅合约：<input id="me1" type="text" value="" style="width:480px" /></label>
+                                <label>可订阅指数：<input id="me2" type="text" value="" style="width:480px" /></label>
+                                <input id="mbq1" type="button" route="GetAssetD" value="查询合约详情" />
+                            </div>
+                            <div style="line-height:30px">
+                                <label>订阅合约：<input id="me3" type="text" value="" style="width:80px" /></label>
+                                <label><input id="mc1" type="checkbox" name="tick" />Tick</label>
+                                <label><input id="mc2" type="checkbox" name="trade" />成交</label>
+                                <label><input id="mc3" type="checkbox" name="order20" />深度20</label>
+                                <label><input id="mc4" type="checkbox" name="orderl2" />全档深度</label>
+                                <label><input id="mc6" type="checkbox" name="kline_1m" />1分钟K</label>
+                                <label><input id="mc7" type="checkbox" name="kline_3m" />3分钟K</label>
+                                <label><input id="mc8" type="checkbox" name="kline_5m" />5分钟K</label>
+                                <label><input id="mc9" type="checkbox" name="kline_15m" />15分钟K</label>
+                                <label><input id="mc10" type="checkbox" name="kline_30m" />30分钟K</label>
+                                <label><input id="mc11" type="checkbox" name="kline_1h" />1小时K</label>
+                                <label><input id="mc12" type="checkbox" name="kline_2h" />2小时K</label>
+                                <label><input id="mc13" type="checkbox" name="kline_4h" />4小时K</label>
+                                <label><input id="mc14" type="checkbox" name="kline_6h" />6小时K</label>
+                                <label><input id="mc15" type="checkbox" name="kline_8h" />8小时K</label>
+                                <label><input id="mc16" type="checkbox" name="kline_12h" />12小时K</label>
+                                <label><input id="mc17" type="checkbox" name="kline_1d" />日K</label>
+                                <label><input id="mc18" type="checkbox" name="kline_3d" />3日K</label>
+                                <label><input id="mc19" type="checkbox" name="kline_1w" />1周K</label>
+                                <label><input id="mc20" type="checkbox" name="kline_2w" />2周K</label>
+                                <label><input id="mc21" type="checkbox" name="kline_1M" />月K</label>
+                            </div>
+                            <div style="line-height:30px">
+                                <label><input id="mc31" type="checkbox" name="index_GMEX_CI_BTC" />BTC指数</label>
+                                <label><input id="mc32" type="checkbox" name="index_GMEX_CI_ETH" />ETH指数</label>
+                                <label><input id="mc33" type="checkbox" name="index_GMEX_CI_GAEA" />GAEA指数</label>
+                            </div>
+                            <div style="line-height:30px">
+                                <label>查询：<input id="me4" type="text" value="" style="width:80px" /></label>
+                                <label>开始秒<input id="me5-0" type="text" value="1537077600" style="width:80px" /></label>
+                                <label>Offset<input id="me5-1" type="text" value="0" style="width:40px" /></label>
+                                <label>Count<input id="me5-2" type="text" value="1440" style="width:40px" /></label>
+                                <input id="mb_6" type="button" name="1m" value="1分钟K">
+                                <input id="mb_7" type="button" name="3m" value="3分钟K">
+                                <input id="mb_8" type="button" name="5m" value="5分钟K">
+                                <input id="mb_9" type="button" name="15m" value="15分钟K">
+                                <input id="mb_10" type="button" name="30m" value="30分钟K">
+                                <input id="mb_11" type="button" name="1h" value="1小时K">
+                                <input id="mb_12" type="button" name="2h" value="2小时K">
+                                <input id="mb_13" type="button" name="4h" value="4小时K">
+                                <input id="mb_14" type="button" name="6h" value="6小时K">
+                                <input id="mb_15" type="button" name="8h" value="8小时K">
+                                <input id="mb_16" type="button" name="12h" value="12小时K">
+                                <input id="mb_17" type="button" name="1d" value="日K">
+                                <input id="mb_18" type="button" name="3d" value="3日K">
+                                <input id="mb_19" type="button" name="1w" value="1周K">
+                                <input id="mb_20" type="button" name="2w" value="2周K">
+                                <input id="mb_21" type="button" name="1M" value="月K">
+                                <input id="mbOrderL2" type="button" value="L2行情查看">
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align=center width=100>交易</td>
+                        <td>
+                            <div style="line-height:30px">
+                                <select name="selected-aid" id="selected-aid"><option value="01">合约账户(01)</option><option value="02">币币账户(02)</option></select>
+                                &nbsp;&lt;&lt;|&gt;&gt;&nbsp;
+                                <input id="tbg1" type="button" route="GetAssetD" value="查询交易对" />
+                                <input id="tbg2" type="button" route="GetWallets" value="查询钱包" />
+                                <input id="tbg3" type="button" route="GetTrades" value="查询成交记录" />
+                                <input id="tbg4" type="button" route="GetOrders" value="查询报单记录" />
+                                <label><input id="tc1" type="checkbox" />全撤单</label>
+                                <input id="tbg5" type="button" route="GetPositions" value="查询持仓记录" />
+                                <input id="tbg6" type="button" route="GetHistOrders" value="查询报单历史" />
+                                <input id="tbg7" type="button" route="GetWalletsLog" value="查询钱包记录" />
+								<input id="tbg8" type="button" route="GetRiskLimit" value="查询风险限额" />
+                            </div>
+                            <div style="line-height:30px" id="div_order1">
+                                <input id="tbordercast" type="button" value="下单" />
+                                <label>合约：<input id="te1" type="text" value="" style="width:100px" /></label>
+                                方向：
+                                <label><input type="radio" name="direct1" value="1" checked="checked" />买</label>
+                                <label><input type="radio" name="direct1" value="-1" />卖</label>
+
+                                报价方式：
+                                <label><input type="radio" name="OType" value="1" checked="checked" />限价委单</label>
+                                <label><input type="radio" name="OType" value="2" />市价委单</label>
+                                <label>价格：<input id="te2" type="text" value="0" style="width:60px" /></label>
+                                <label>数量：<input id="te3" type="text" value="0" style="width:60px" /></label>
+                                <label>显示数量：<input id="te4" type="text" value="0" style="width:60px" /></label>
+                                生效方式：
+                                <label><input type="radio" name="Tif" value="0" checked="checked" />一直有效</label>
+                                <label><input type="radio" name="Tif" value="1" />部分成交剩余取消FAK</label>
+                                <label><input type="radio" name="Tif" value="2" />全部成交或取消FOK</label>
+                                <br /> 标志位：
+                                <label><input type="radio" name="OrdFlag" value="0" checked="checked" />无</label>
+                                <label><input type="radio" name="OrdFlag" value="1" />如果立即成交，则取消</label>
+
+                                <label>市价成交档位：<input id="te5" type="text" value="0" style="width:40px" /></label>
+                            </div>
+                            <div style="line-height:30px">
+                                <input id="tbordercancel" type="button" value="撤单" />
+                                <label>合约：<input id="te11" type="text" value="" style="width:100px" /></label>
+                                <label>订单编号：<input id="te12" type="text" value="" style="width:200px" /></label>
+                                <input id="tbordertimeout" type="button" value="超时撤单" />
+                                <label>时间(s)：<input id="te13" type="text" value="" style="width:40px" /></label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align=center width=100>其他</td>
+                        <td>
+                            <div style="line-height:30px">
+                                <input type="button" value="清空" onclick="clearOutputTxt()" />
+                                <input type="button" value="查询服务器时间" onclick="queryServerTime()" />
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+        </div>
+
+        <div>
+            <textarea id="my_textarea_output" rows="15" style="width:100%;height:100%" autocomplete="off" spellcheck="false" wrap="soft"></textarea>
+        </div>
+    </div>
+</body>
+
+<script>
+    $(function () {
+        // 订阅取消行情
+        $("input[id^='mc']").click(function () {
+            console.log(this.checked,this.name,$("#me1").val());
+            var sym = this.name;
+            if (sym.indexOf("GMEX_CI_") < 0)
+                sym = sym + "_" + $("#me3").val();
+            if (this.checked) {
+                $(this).attr("sym", sym)
+                request_market('Sub', [sym])
+            } else {
+                console.log($(this).attr("sym"))
+                request_market('UnSub', [$(this).attr("sym")])
+            }
+
+        });
+
+        // 查询k线历史
+        $("input[id^='mb_']").click(function () {
+            var typ = this.name;
+            var sym = $("#me4").val();
+            var nBeginSec = Math.floor(Date.now() / 1000) - 60 * 60 * 24 * 30
+            var txt0 = $("#me5-0").val();
+            if (txt0) {
+                nBeginSec = Number(txt0)
+            }
+            nOffset = 0;
+            var txt1 = $("#me5-1").val();
+            if (txt1) {
+                nOffset = Number(txt1)
+            }
+            nCount = 1440;
+            var txt2 = $("#me5-2").val();
+            if (txt2) {
+                nCount = Number(txt2)
+            }
+            if (sym) {
+                request_market('GetHistKLine', { Sym: sym, Typ: typ, Sec: nBeginSec, Offset: nOffset, Count: nCount })
+            }
+        });
+
+        // 查询k线历史
+        $("input[id^='mbOrderL2']").click(function () {
+            L2Init();
+            G_LOG("debug", `[orderl2]: asks ${orderl2.asks.length} , bids ${orderl2.bids.length}`)
+            //G_LOG("market", `[orderl2] : ${JSONStringify(orderl2)}`)
+            console.log(`[orderl2] << `, orderl2)
+        });
+
+        // 查询合约详情
+        $("input[id^='mbq1']").click(function () {
+            var route = $(this).attr("route");
+            var name = $(this).attr("value");
+            request_market(route, {}, (ret) => {
+                console.log(`[req.market] << `, ret)
+                G_LOG("debug", `<< ${route}(${name}): ${JSONStringify(ret)}`);
+            });
+        });
+
+        // 查询交易数据
+        $("input[id^='tbg']").click(function () {
+            if (! udata.uid ) {
+                console.log(`[-] no uid, please login first!`)
+                return
+            }
+            var route = $(this).attr("route");
+            var name = $(this).attr("value");
+            var subfix = $("#selected-aid").val()
+            var aid = udata.uid + subfix
+            request_trade(route, { AId: aid }, (ret) => {
+                console.log(`[trade.get] << `, ret)
+                G_LOG("debug", `<< ${route}(${name}): ${JSONStringify(ret)}`);
+                if (route == 'GetOrders' && ret.code == 0 && $("#tc1")[0].checked) {
+                    G_LOG("debug", `CANCEL ALL ...`);
+                    for (var i in ret.data) {
+                        var o = ret.data[i]
+                        request_trade('OrderDel', {
+                            AId: o.AId,
+                            OrdId: o.OrdId,
+                            Sym: o.Sym
+                        }, (ret) => {
+                            G_LOG("debug", `<< [OrderCancel]: ${JSONStringify(ret)}`);
+                        });
+                    }
+                }
+            })
+        });
+
+        // 下单
+        $("#tbordercast").click(function () {
+            if (! udata.uid ) {
+                console.log(`[-] no uid, please login first!`)
+                return
+            }
+            var route = 'OrderNew'
+            var name = '下单'
+            var subfix = $("#selected-aid").val()
+            var aid = udata.uid + subfix
+            var sym = $("#te1").val();
+            var dir = $("#div_order1 input[name='direct1']:checked").val();
+            var OType = $("#div_order1 input[name='OType']:checked").val();
+            var Tif = $("#div_order1 input[name='Tif']:checked").val();
+            var OrdFlag = $("#div_order1 input[name='OrdFlag']:checked").val();
+            var Prz = $("#te2").val();
+            var Qty = $("#te3").val();
+            var QtyDsp = $("#te4").val();
+            var PrzChg = $("#te5").val();
+            console.log("OrderNew:", aid, sym, dir, OType, Tif, OrdFlag, Prz, Qty, QtyDsp, PrzChg)
+            request_trade(route, {
+                AId: aid,
+                COrdId: String(udata.oid++),
+                Sym: sym,
+                Dir: Number(dir),
+                OType: Number(OType),
+                Prz: Number(Prz),
+                Qty: Number(Qty),
+                QtyDsp: Number(QtyDsp),
+                Tif: Number(Tif),
+                OrdFlag: Number(OrdFlag),
+                PrzChg: Number(PrzChg)
+            }, (ret) => {
+                console.log(`[trade.OrderNew] << `, ret)
+                G_LOG("debug", `<< ${route}(${name}): ${JSONStringify(ret)}`);
+            });
+        });
+
+        // 撤单
+        $("#tbordercancel").click(function () {
+            if (! udata.uid ) {
+                console.log(`[-] no uid, please login first!`)
+                return
+            }
+            var route = 'OrderDel'
+            var name = '撤单'
+            var subfix = $("#selected-aid").val()
+            var aid = udata.uid + subfix
+            var sym = $("#te11").val();
+            var OrdId = $("#te12").val();
+            console.log("OrderDel:", aid, sym, OrdId)
+            request_trade(route, {
+                AId: aid,
+                OrdId: OrdId,
+                Sym: sym
+            }, (ret) => {
+                console.log(`[trade.OrderDel] << `, ret)
+                G_LOG("debug", `<< ${route}(${name}): ${JSONStringify(ret)}`);
+            });
+        });
+
+        // 超时撤单
+        $("#tbordertimeout").click(function () {
+            if (! udata.uid ) {
+                console.log(`[-] no uid, please login first!`)
+                return
+            }
+            var route = 'CancelAllAfter'
+            var name = '超时撤单'
+            var subfix = $("#selected-aid").val()
+            var aid = udata.uid + subfix
+            var sec = Number($("#te13").val()) || 0;
+            request_trade(route, {
+                AId: aid,
+                Sec: sec
+            }, (ret) => {
+                console.log(`[trade.CancelAllAfter] << `, ret)
+                G_LOG("debug", `<< ${route}(${name}): ${JSONStringify(ret)}`);
+            });
+        });
+    });
+
+
+</script>
+
+</html>
