@@ -98,12 +98,6 @@ namespace Gmex.API.Models
         public long PosLmtStart { get; set; }
 
         /// <summary>
-        /// 个人持仓最大比例
-        /// </summary>
-        [JsonProperty(Order = 10)]
-        public decimal PosOpenRatio { get; set; }
-
-        /// <summary>
         /// 提供流动性的费率
         /// </summary>
         public decimal FeeMkrR { get; set; }
@@ -172,6 +166,16 @@ namespace Gmex.API.Models
         /// 下一个资金费率结算的时间。2018年4月16日 下午8:00:00. 时间戳 毫秒
         /// </summary>
         public long FundingNext { get; set; }
+
+        /// <summary>
+        /// 每日0点后的 FundingOffset 毫秒后 为第一个结算时间点.
+        /// </summary>
+        public long FundingOffset { get; set; }
+
+        /// <summary>
+        /// 资金费率计算参数: 公差
+        /// </summary>
+        public decimal FundingTolerance { get; set; }
 
         /// <summary>
         /// 资金费率结算佣金

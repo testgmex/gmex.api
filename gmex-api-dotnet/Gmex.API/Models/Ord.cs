@@ -287,6 +287,7 @@ namespace Gmex.API.Models
         Fee = 8,        // 手续费
         Depo = 9,       // 存钱
         Wdrw = 10,      // 取钱
+        Funding = 11,   // Funding
     }
 
     public enum OrderStatus
