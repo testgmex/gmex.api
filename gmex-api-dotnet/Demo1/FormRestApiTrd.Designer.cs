@@ -600,6 +600,7 @@
             this.Controls.Add(this.textBoxOUT);
             this.Controls.Add(this.panel1);
             this.Name = "FormRestApiTrd";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GMEX REST API DEMO -- trade/交易";
             this.Load += new System.EventHandler(this.FormRestApiTrd_Load);
             this.panel1.ResumeLayout(false);

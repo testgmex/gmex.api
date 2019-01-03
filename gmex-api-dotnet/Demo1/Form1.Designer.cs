@@ -209,11 +209,11 @@
             // 
             // button17
             // 
-            this.button17.Location = new System.Drawing.Point(1015, 9);
+            this.button17.Location = new System.Drawing.Point(980, 6);
             this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(137, 23);
+            this.button17.Size = new System.Drawing.Size(172, 23);
             this.button17.TabIndex = 6;
-            this.button17.Text = "【REST API DEMO】";
+            this.button17.Text = "【MARKET REST API DEMO】";
             this.button17.UseVisualStyleBackColor = true;
             this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
@@ -531,11 +531,11 @@
             // 
             // button18
             // 
-            this.button18.Location = new System.Drawing.Point(1018, 6);
+            this.button18.Location = new System.Drawing.Point(980, 6);
             this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(137, 23);
+            this.button18.Size = new System.Drawing.Size(172, 23);
             this.button18.TabIndex = 42;
-            this.button18.Text = "【REST API DEMO】";
+            this.button18.Text = "【TRADE REST API DEMO】";
             this.button18.UseVisualStyleBackColor = true;
             this.button18.Click += new System.EventHandler(this.button18_Click);
             // 
@@ -1116,7 +1116,7 @@
             this.Controls.Add(this.textBoxOUT1);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "GMEX WebSocket API Demo";
+            this.Text = "GMEX API Demo";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
