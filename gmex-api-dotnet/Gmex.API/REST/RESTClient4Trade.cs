@@ -123,9 +123,8 @@ namespace Gmex.API.REST
             using (var httpClient = new HttpClient())
             {
                 var args = new RestTradeMessageRequest("GetAssetD",
-                    new Dictionary<string, object>() {
-                        { "AId", m_uid + "00" }/*, {"Sym", sym}, {"Start", 0}, {"Stop", 100}*/
-                    });
+                    new Dictionary<string, object>() { { "AId", m_uid + accType.ToString("D2") } }
+                    );
                 var content = new StringContent(args.GetSignedTxt(m_uname, m_apikey, m_apisecret), Encoding.UTF8, "application/json");
 
                 var res = await httpClient.PostAsync(url, content);

@@ -142,6 +142,7 @@ namespace Demo1
             try
             {
                 var ret = await cli4trd.GetAssetDAsync(comboBoxTrdAccType.SelectedIndex + 1);
+                comboBoxTrdSym.Items.Clear();
                 LOG($"[GetAssetD] <<");
                 foreach (var item in ret)
                 {
@@ -158,7 +159,6 @@ namespace Demo1
             {
                 LOG("[ERROR] Exception: " + ex.Message + "\r\n");
             }
-
         }
 
         private async void buttonGetWlts_ClickAsync(object sender, EventArgs e)
