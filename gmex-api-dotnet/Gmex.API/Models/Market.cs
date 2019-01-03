@@ -473,4 +473,7 @@ namespace Gmex.API.Models
         /// </summary>
         public List<decimal> Turnover { get; set; }
     }
+
+
+    
 }

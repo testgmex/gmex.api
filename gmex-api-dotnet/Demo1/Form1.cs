@@ -75,13 +75,6 @@ namespace Demo1
             InitializeComponent();
         }
 
-        class UserApiKeyData
-        {
-            public string UserName { get; set; }
-            public string ApiKey { get; set; }
-            public string ApiSecret { get; set; }
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             comboBoxMktServer.SelectedIndex = 0;
@@ -96,12 +89,13 @@ namespace Demo1
                 string apikeyfile = @"user-api-key.json";
                 if (File.Exists(apikeyfile))
                 {
-                    var data = Helper.MyJsonUnmarshal<UserApiKeyData>(File.ReadAllText(apikeyfile));
+                    var data = Helper.MyJsonUnmarshal<Gmex.API.Models.UserApiKeyData>(File.ReadAllText(apikeyfile));
                     textBoxUname.Text = data.UserName;
                     textBoxApiKey.Text = data.ApiKey;
                     textBoxApiSecret.Text = data.ApiSecret;
                 }
-            }catch(Exception) { }
+            }
+            catch (Exception) { }
         }
 
         private void OnMarketPushMessage(object obj)
@@ -791,7 +785,8 @@ namespace Demo1
                     ord.OrdFlag__Set(Gmex.API.Models.OrdFlag.POSTONLY);
                 if (checkBoxREDUCEONLY.Checked)
                     ord.OrdFlag__Set(Gmex.API.Models.OrdFlag.REDUCEONLY);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 LOG("[ERROR]: " + ex.Message);
                 return;
@@ -832,6 +827,26 @@ namespace Demo1
                 LOG($"[DEBUG] OrderDel ret {code}\r\n");
                 LOG("<< OrderDel: " + Helper.MyJsonMarshal(obj) + "\r\n");
             }, cts4trd.Token);
+        }
+
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            //this.Hide();
+            //var frm = new Form2();
+            //frm.FormClosed += new FormClosedEventHandler((sender2, e2) =>
+            //{
+            //    this.Show();
+            //});
+            //frm.Show();
+            var frm = new FormRestApiMkt();
+            frm.Show();
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            var frm = new FormRestApiTrd();
+            frm.Show();
         }
     }
 }

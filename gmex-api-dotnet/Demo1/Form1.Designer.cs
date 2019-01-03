@@ -33,6 +33,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button17 = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.comboBoxMktKLineTyp = new System.Windows.Forms.ComboBox();
@@ -60,6 +61,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.comboBoxMktServer = new System.Windows.Forms.ComboBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.button18 = new System.Windows.Forms.Button();
             this.checkBox_onWltLog = new System.Windows.Forms.CheckBox();
             this.checkBox_onPosition = new System.Windows.Forms.CheckBox();
             this.checkBox_onOrder = new System.Windows.Forms.CheckBox();
@@ -141,7 +143,7 @@
             this.textBoxOUT1.Multiline = true;
             this.textBoxOUT1.Name = "textBoxOUT1";
             this.textBoxOUT1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxOUT1.Size = new System.Drawing.Size(1073, 170);
+            this.textBoxOUT1.Size = new System.Drawing.Size(1162, 170);
             this.textBoxOUT1.TabIndex = 2;
             // 
             // button2
@@ -163,11 +165,12 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1077, 283);
+            this.tabControl1.Size = new System.Drawing.Size(1166, 283);
             this.tabControl1.TabIndex = 4;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button17);
             this.tabPage1.Controls.Add(this.label12);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.comboBoxMktKLineTyp);
@@ -199,10 +202,20 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1069, 257);
+            this.tabPage1.Size = new System.Drawing.Size(1158, 257);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "【行情】";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // button17
+            // 
+            this.button17.Location = new System.Drawing.Point(1015, 9);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(137, 23);
+            this.button17.TabIndex = 6;
+            this.button17.Text = "【REST API DEMO】";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
             // label12
             // 
@@ -474,6 +487,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button18);
             this.tabPage2.Controls.Add(this.checkBox_onWltLog);
             this.tabPage2.Controls.Add(this.checkBox_onPosition);
             this.tabPage2.Controls.Add(this.checkBox_onOrder);
@@ -510,17 +524,27 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1069, 257);
+            this.tabPage2.Size = new System.Drawing.Size(1158, 257);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "【交易】";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // button18
+            // 
+            this.button18.Location = new System.Drawing.Point(1018, 6);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(137, 23);
+            this.button18.TabIndex = 42;
+            this.button18.Text = "【REST API DEMO】";
+            this.button18.UseVisualStyleBackColor = true;
+            this.button18.Click += new System.EventHandler(this.button18_Click);
             // 
             // checkBox_onWltLog
             // 
             this.checkBox_onWltLog.AutoSize = true;
             this.checkBox_onWltLog.Checked = true;
             this.checkBox_onWltLog.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_onWltLog.Location = new System.Drawing.Point(928, 10);
+            this.checkBox_onWltLog.Location = new System.Drawing.Point(383, 64);
             this.checkBox_onWltLog.Name = "checkBox_onWltLog";
             this.checkBox_onWltLog.Size = new System.Drawing.Size(72, 16);
             this.checkBox_onWltLog.TabIndex = 41;
@@ -532,7 +556,7 @@
             this.checkBox_onPosition.AutoSize = true;
             this.checkBox_onPosition.Checked = true;
             this.checkBox_onPosition.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_onPosition.Location = new System.Drawing.Point(838, 10);
+            this.checkBox_onPosition.Location = new System.Drawing.Point(293, 64);
             this.checkBox_onPosition.Name = "checkBox_onPosition";
             this.checkBox_onPosition.Size = new System.Drawing.Size(84, 16);
             this.checkBox_onPosition.TabIndex = 40;
@@ -544,7 +568,7 @@
             this.checkBox_onOrder.AutoSize = true;
             this.checkBox_onOrder.Checked = true;
             this.checkBox_onOrder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_onOrder.Location = new System.Drawing.Point(766, 10);
+            this.checkBox_onOrder.Location = new System.Drawing.Point(221, 64);
             this.checkBox_onOrder.Name = "checkBox_onOrder";
             this.checkBox_onOrder.Size = new System.Drawing.Size(66, 16);
             this.checkBox_onOrder.TabIndex = 39;
@@ -556,7 +580,7 @@
             this.checkBox_onTrade.AutoSize = true;
             this.checkBox_onTrade.Checked = true;
             this.checkBox_onTrade.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_onTrade.Location = new System.Drawing.Point(694, 10);
+            this.checkBox_onTrade.Location = new System.Drawing.Point(149, 64);
             this.checkBox_onTrade.Name = "checkBox_onTrade";
             this.checkBox_onTrade.Size = new System.Drawing.Size(66, 16);
             this.checkBox_onTrade.TabIndex = 38;
@@ -568,7 +592,7 @@
             this.checkBox_onWallet.AutoSize = true;
             this.checkBox_onWallet.Checked = true;
             this.checkBox_onWallet.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_onWallet.Location = new System.Drawing.Point(616, 10);
+            this.checkBox_onWallet.Location = new System.Drawing.Point(71, 64);
             this.checkBox_onWallet.Name = "checkBox_onWallet";
             this.checkBox_onWallet.Size = new System.Drawing.Size(72, 16);
             this.checkBox_onWallet.TabIndex = 37;
@@ -604,7 +628,7 @@
             this.groupBox2.Size = new System.Drawing.Size(1054, 101);
             this.groupBox2.TabIndex = 36;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "下单";
+            this.groupBox2.Text = "下撤单";
             // 
             // label15
             // 
@@ -628,7 +652,7 @@
             // 
             // buttonOrderDel
             // 
-            this.buttonOrderDel.Location = new System.Drawing.Point(489, 69);
+            this.buttonOrderDel.Location = new System.Drawing.Point(580, 69);
             this.buttonOrderDel.Name = "buttonOrderDel";
             this.buttonOrderDel.Size = new System.Drawing.Size(106, 23);
             this.buttonOrderDel.TabIndex = 56;
@@ -640,7 +664,7 @@
             // 
             this.textBox_ORD_OrdId.Location = new System.Drawing.Point(109, 71);
             this.textBox_ORD_OrdId.Name = "textBox_ORD_OrdId";
-            this.textBox_ORD_OrdId.Size = new System.Drawing.Size(363, 21);
+            this.textBox_ORD_OrdId.Size = new System.Drawing.Size(459, 21);
             this.textBox_ORD_OrdId.TabIndex = 55;
             // 
             // label22
@@ -816,11 +840,11 @@
             // 
             // button20
             // 
-            this.button20.Location = new System.Drawing.Point(880, 115);
+            this.button20.Location = new System.Drawing.Point(992, 86);
             this.button20.Name = "button20";
-            this.button20.Size = new System.Drawing.Size(106, 23);
+            this.button20.Size = new System.Drawing.Size(149, 23);
             this.button20.TabIndex = 34;
-            this.button20.Text = "查我的钱包";
+            this.button20.Text = "查我的钱包/资金中心";
             this.button20.UseVisualStyleBackColor = true;
             this.button20.Click += new System.EventHandler(this.button20_ClickAsync);
             // 
@@ -854,7 +878,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(2, 116);
+            this.label11.Location = new System.Drawing.Point(9, 115);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(47, 12);
             this.label11.TabIndex = 29;
@@ -863,7 +887,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(2, 89);
+            this.label10.Location = new System.Drawing.Point(9, 91);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(53, 12);
             this.label10.TabIndex = 28;
@@ -872,7 +896,7 @@
             // comboBoxTrdSym
             // 
             this.comboBoxTrdSym.FormattingEnabled = true;
-            this.comboBoxTrdSym.Location = new System.Drawing.Point(60, 113);
+            this.comboBoxTrdSym.Location = new System.Drawing.Point(68, 112);
             this.comboBoxTrdSym.Name = "comboBoxTrdSym";
             this.comboBoxTrdSym.Size = new System.Drawing.Size(140, 20);
             this.comboBoxTrdSym.TabIndex = 27;
@@ -939,7 +963,7 @@
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(208, 84);
+            this.button10.Location = new System.Drawing.Point(211, 84);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(106, 23);
             this.button10.TabIndex = 19;
@@ -953,14 +977,14 @@
             this.comboBoxTrdAccType.Items.AddRange(new object[] {
             "合约账户（01）",
             "币币账户（02）"});
-            this.comboBoxTrdAccType.Location = new System.Drawing.Point(60, 86);
+            this.comboBoxTrdAccType.Location = new System.Drawing.Point(68, 86);
             this.comboBoxTrdAccType.Name = "comboBoxTrdAccType";
             this.comboBoxTrdAccType.Size = new System.Drawing.Size(140, 20);
             this.comboBoxTrdAccType.TabIndex = 18;
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(208, 113);
+            this.button9.Location = new System.Drawing.Point(211, 113);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(106, 23);
             this.button9.TabIndex = 17;
@@ -998,7 +1022,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 11);
+            this.label6.Location = new System.Drawing.Point(6, 9);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(47, 12);
             this.label6.TabIndex = 13;
@@ -1030,7 +1054,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(521, 7);
+            this.button6.Location = new System.Drawing.Point(502, 6);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 9;
@@ -1044,14 +1068,14 @@
             this.comboBoxTrdServer.Items.AddRange(new object[] {
             "wss://trade01.gmex.io/v1/trade",
             "wss://api-trade.gmex.io/v1/trade"});
-            this.comboBoxTrdServer.Location = new System.Drawing.Point(68, 7);
+            this.comboBoxTrdServer.Location = new System.Drawing.Point(59, 6);
             this.comboBoxTrdServer.Name = "comboBoxTrdServer";
             this.comboBoxTrdServer.Size = new System.Drawing.Size(275, 20);
             this.comboBoxTrdServer.TabIndex = 8;
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(359, 7);
+            this.button7.Location = new System.Drawing.Point(340, 6);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 6;
@@ -1061,7 +1085,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(440, 7);
+            this.button8.Location = new System.Drawing.Point(421, 6);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(75, 23);
             this.button8.TabIndex = 7;
@@ -1079,14 +1103,14 @@
             this.textBoxOUT2.Multiline = true;
             this.textBoxOUT2.Name = "textBoxOUT2";
             this.textBoxOUT2.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxOUT2.Size = new System.Drawing.Size(1077, 175);
+            this.textBoxOUT2.Size = new System.Drawing.Size(1166, 175);
             this.textBoxOUT2.TabIndex = 5;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1101, 650);
+            this.ClientSize = new System.Drawing.Size(1190, 650);
             this.Controls.Add(this.textBoxOUT2);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.textBoxOUT1);
@@ -1196,6 +1220,8 @@
         private System.Windows.Forms.CheckBox checkBox_onOrder;
         private System.Windows.Forms.CheckBox checkBox_onTrade;
         private System.Windows.Forms.CheckBox checkBox_onWallet;
+        private System.Windows.Forms.Button button17;
+        private System.Windows.Forms.Button button18;
     }
 }
 

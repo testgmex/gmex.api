@@ -8,13 +8,13 @@ namespace Gmex.API.Models
         /// <summary>
         /// 合约符合/交易对符号，如 BTC.USDT, BTC.BTC, BTC1903, BTC/USDT
         /// </summary>
-        [JsonProperty(Order = 1, PropertyName = "Sym")]
+        [JsonProperty(Order = -1, PropertyName = "Sym")]
         public string Sym { get; set; }
 
         /// <summary>
         /// 开始时间,毫秒
         /// </summary>
-        [JsonProperty(Order = 2, PropertyName = "Beg")]
+        [JsonProperty(PropertyName = "Beg")]
         public long Beg { get; set; }
 
         /// <summary>
