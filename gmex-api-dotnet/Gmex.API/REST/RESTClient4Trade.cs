@@ -170,10 +170,11 @@ namespace Gmex.API.REST
         /// <returns></returns>
         public async Task<List<Models.CcsWallet>> GetCcsWalletsAsync()
         {
-            var url = $"{m_url}/req/GetWallets";
+            var url = $"{m_url}/req/GetCcsWallets";
             using (var httpClient = new HttpClient())
             {
-                var args = new RestTradeMessageRequest("GetWallets", new Dictionary<string, object>() { { "AId", m_uid + "00" } });
+                //var args = new RestTradeMessageRequest("GetWallets", new Dictionary<string, object>() { { "AId", m_uid + "00" } });
+                var args = new RestTradeMessageRequest("GetCcsWallets", null);
                 var content = new StringContent(args.GetSignedTxt(m_uname, m_apikey, m_apisecret), Encoding.UTF8, "application/json");
 
                 var res = await httpClient.PostAsync(url, content);
