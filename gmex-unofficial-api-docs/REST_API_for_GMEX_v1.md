@@ -20,6 +20,7 @@
         交易服务: https://trade02.gmex.io/v1/rest
 
 ## 签名生成方法
+
 > 计算公式: MD5(req+args+expires+API.SecretKey)
 
   例如:
@@ -36,10 +37,10 @@
 
   通过计算得到的签名:b094142522364fab85ef82b8f875ca89
 
-
 ## 行情API示例
 
 * 获取服务器时间Time
+
 ```JavaScript
     // 请求
     http GET https://market02.gmex.io/v1/rest/Time
@@ -52,7 +53,8 @@
     }
 ```
 
-* 获取可订阅的交易对信息GetAssetD
+* 获取可订阅的交易对信息 GetAssetD
+
 ```JavaScript
     // 请求
     http GET https://market02.gmex.io/v1/rest/GetAssetD
@@ -107,7 +109,9 @@
         ]
     }
 ```
-* 获取可订阅的指数信息GetCompositeIndex
+
+* 获取可订阅的指数信息 GetCompositeIndex
+
 ```JavaScript
     // 请求
 
@@ -143,7 +147,8 @@
     }
 ```
 
-* 获取历史K线信息GetHistKLine
+* 获取历史K线数据 GetHistKLine
+
 ```JavaScript
     // 请求
     /**
@@ -196,7 +201,8 @@
     }
 ```
 
-* 指数的聚合行情GetIndexTick
+* 指数的聚合行情 GetIndexTick
+
 ```JavaScript
     // 请求
     /**
@@ -250,7 +256,9 @@
         }
     }
 ```
-* 交易对的聚合行情
+
+* 交易对的聚合行情 GetTick
+
 ```JavaScript
     // 请求
     /**
@@ -290,7 +298,8 @@
     }
 ```
 
-* 获取交易对的成交记录
+* 获取交易对的成交记录 GetTrades
+
 ```JavaScript
     // 请求
     /**
@@ -327,7 +336,9 @@
         ]
    }
 ```
-* 获取交易对的20档行情
+
+* 获取交易对的20档行情 GetOrd20
+
 ```JavaScript
     // 请求
     /**
@@ -371,7 +382,8 @@
 
 ## 交易API示例
 
-* 获取服务器时间Time
+* 获取服务器时间 Time
+
 ```JavaScript
     // 请求
     http GET https://trade02.gmex.io/v1/rest/Time
@@ -384,11 +396,12 @@
     }
 ```
 
-* 获取用户信息GetUserInfo
+* 获取用户信息 GetUserInfo
+
 ```JavaScript
     // 请求
     /**
-     * 接口功能: 获取用户信息取到UserID,根据UserID可生成AId
+     * 接口功能: 获取用户信息，主要用来查询用户自己的UserID ,有了UserID就有了自己的AID了.
      * 参数说明:
      * req: Action类型
      * username: 用户名
@@ -411,7 +424,53 @@
 
 ```
 
-* 获取钱包信息GetWallets
+* 查询资金中心(我的钱包)的钱包信息 GetCcsWallets
+
+```JavaScript
+    // 请求
+    /**
+     * 接口功能: 获取用户的钱包信息,钱包分为币币钱包、合约钱包、我的钱包
+     * 参数说明:
+     * req: Action类型
+     * username: 用户名
+     * apikey: 用户在官网申请的apikey
+     * expires: 消息的有效时间
+     * signature: 签名,参考签名生成方法
+     * */
+
+    echo '{"req":"GetCcsWallets", "username":"tt@gaea.com", "apikey":"bEwAA4NCzhexYsNtnyaYnhbMFQw", "expires":1544166944189, "signature":"ac1234c94034566e7943217cd243259e"}' | http POST https://trade02.gmex.io/v1/rest/Action
+
+    {
+        "code": 0,                                          // 0成功,其它则失败
+        "data": [
+            {
+                "wid": "1020415BTC",                        // 主键：资金账户id，uid+Wtype
+                "uid": "1020415",                           // 用户Id
+                "coin": "BTC",                              // 币种的名称
+                "mainBal": 3.06,                            // 主账户余额
+                "otcBal": 0,                                // OTC法币账户余额
+                "lockBal": 0,                               // 锁币额度
+                "financeBal": 0,                            // 理财额度
+                "pawnBal": 0,                               //质押额度
+                "creditNum": 0                              // 欠贷款额度【负】
+            },
+            {
+                "wid": "1020415ETH",                        // 主键：资金账户id，uid+Wtype
+                "uid": "1020415",                           // 用户Id
+                "coin": "ETH",                              // 币种的名称
+                "mainBal": 8.16,                            // 主账户余额
+                "otcBal": 0,                                // OTC法币账户余额
+                "lockBal": 0,                               // 锁币额度
+                "financeBal": 0,                            // 理财额度
+                "pawnBal": 0,                               //质押额度
+                "creditNum": 0                              // 欠贷款额度【负】
+            }
+        ]
+    }
+```
+
+* 获取合约和币币的钱包信息 GetWallets
+
 ```JavaScript
     // 请求
     /**
@@ -421,11 +480,11 @@
      * username: 用户名
      * apikey: 用户在官网申请的apikey
      * args: {
-     *  AId: 账号AId,合约钱包AId=UserID+'01',现货钱包AId=UserID+'02',我的钱包AId=USerID+'03' 例如UserID为1020415,获取的是合约的信息,AId则为"1020415"+"01"==>"102041501"
+     *  AId: 账号AId,合约钱包AId=UserID+'01',现货钱包AId=UserID+'02' 例如UserID为1020415,获取的是合约的信息,AId则为"1020415"+"01"==>"102041501"
      * }
      * expires: 消息的有效时间
      * signature: 签名,参考签名生成方法
-     * */
+     **/
 
     echo '{"req":"GetWallets", "username":"tt@gaea.com", "args":{"AId":"102041501"}, "apikey":"bEwAA4NCzhexYsNtnyaYnhbMFQw", "expires":1544166944189, "signature":"ac5fdac94088cb6e79d5ed7cd20eba9e"}' | http POST https://trade02.gmex.io/v1/rest/Action
 
@@ -469,7 +528,8 @@
     }
 ```
 
-* 钱包日志GetWalletsLog
+* 查询最近的钱包日志 GetWalletsLog
+
 ```JavaScript
     // 请求
     /**
@@ -479,7 +539,7 @@
      * username: 用户名
      * apikey: 用户在官网申请的apikey
      * args: {
-     *  AId: 账号AId,合约钱包AId=UserID+'01',现货钱包AId=UserID+'02',我的钱包AId=USerID+'03',例如UserID为1020415,获取的是合约的信息,AId则为"1020415"+"01"==>"102041501"
+     *  AId: 账号AId,合约钱包AId=UserID+'01',现货钱包AId=UserID+'02'
      * }
      * expires: 消息的有效时间
      * signature: 签名,参考签名生成方法
@@ -525,7 +585,8 @@
     }
 ```
 
-* 历史订单GetHistOrders
+* 查询最近的历史订单明细 GetHistOrders
+
 ```JavaScript
     // 请求
     /**
@@ -535,7 +596,7 @@
      * username: 用户名
      * apikey: 用户在官网申请的apikey
      * args: {
-     *  AId: 账号AId,合约AId=UserID+'01',现货AId=UserID+'02',例如UserID为1020415,获取的是合约的信息,AId则为"1020415"+"01"==>"102041501"
+     *  AId: 账号AId,合约AId=UserID+'01',现货AId=UserID+'02'
      * }
      * expires: 消息的有效时间
      * signature: 签名,参考签名生成方法
@@ -610,7 +671,8 @@
     }
 ```
 
-* 获取持仓信息GetPositions
+* 查询持仓信息 GetPositions
+
 ```JavaScript
     // 请求
     /**
@@ -620,7 +682,7 @@
      * username: 用户名
      * apikey: 用户在官网申请的apikey
      * args: {
-     *  AId: 账号AId,合约AId=UserID+'01',现货AId=UserID+'02',例如UserID为1020415,获取的是合约的信息,AId则为"1020415"+"01"==>"102041501"
+     *  AId: 账号AId,合约AId=UserID+'01',现货AId=UserID+'02'
      * }
      * expires: 消息的有效时间
      * signature: 签名,参考签名生成方法
@@ -656,7 +718,8 @@
     }
 ```
 
-* 获取委托GetOrders
+* 查询委托 GetOrders
+
 ```JavaScript
     // 请求
     /**
@@ -710,7 +773,8 @@
     }
 ```
 
-* 委托下单OrderNew
+* 委托下单 OrderNew
+
 ```JavaScript
     // 请求
     /**
@@ -775,7 +839,8 @@
     }
 ```
 
-* 撤销委托OrderDel
+* 撤销委托 OrderDel
+
 ```JavaScript
     // 请求
     /**
@@ -827,7 +892,8 @@
     }
 ```
 
-* 调整杠杆PosLeverage
+* 调整杠杆 PosLeverage
+
 ```JavaScript
     // 请求
     /**
@@ -855,7 +921,8 @@
     }
 ```
 
-* 增删资金PosTransMgn
+* 增删资金 PosTransMgn
+
 ```JavaScript
     // 请求
     /**
@@ -883,7 +950,8 @@
     }
 ```
 
-* 超时撤单CancelAllAfter
+* 超时撤单 CancelAllAfter
+
 ```JavaScript
     // 请求
     /**
@@ -909,8 +977,9 @@
     }
 ```
 
-* 获取用户风险限额
-```js
+* 获取用户风险限额 GetRiskLimit
+
+```JavaScript
     // 请求
     /**
      * 接口功能: 查询用户风险限额(内测中,不建议使用)

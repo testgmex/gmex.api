@@ -7,7 +7,7 @@
 
 GMEX官方的生产环境：
 
-```
+```txt
 官方网址： https://www.gmex.io
 行情服务： wss://api-market.gmex.io/v1/market
 交易服务： wss://api-trade.gmex.io/v1/trade
@@ -15,7 +15,7 @@ GMEX官方的生产环境：
 
 为方便大家测试，官方提供模拟环境:
 
-```
+```txt
 模拟网址： https://simgo.gmex.io
 模拟行情： wss://market01.gmex.io/v1/market
 模拟交易： wss://trade01.gmex.io/v1/trade
@@ -485,6 +485,7 @@ type AssetD struct {
 }
 ```
 
+
 4. 查询用户子账号的最近的成交记录(必须参数 AId)： GetTrades
 ```js
 // 发送请求消息
@@ -886,8 +887,87 @@ args: {
 调用此接口成功后，用户该AId下的所有报单将在n秒后被全部自动撤单。通过设置0秒可以禁用此功能,常见的使用模式是设 timeout 为 60000,并每隔 15 秒调用一次,建议每次使用完API将Sec设置为0,禁用此功能。
 
 
+ 13. 查询用户的风险限额GetRiskLimit(内测中)
+```JavaScript
+    /**
+    * 功能: 查询某个交易对用户的风险限额
+    * 参数说明:
+    * expires:          // 消息的有效时间
+    * rid: 10           //用户发送请求的唯一编号，由于websocket是异步通讯，用户需要通过匹配收到消息的rid和自己发送的rid来匹配操作和应答。
+    * req: 'GetRiskLimit'   // 请求的动作名称
+    * signature: ""         // 签名,参考签名的生成规则
+    * args: {
+    *  "AId": "",           // 账号的AId,
+    *  "Sym": "",           // 交易对名称
+    * }
+    */
+    // 请求发送参数
+    {"req":"GetRiskLimit","rid":"15","expires":1537712072667,"args":{"AId":"123456701",Sym:"BTC1812"},"signature": "1234567890abcdef1234567890abcdef"}
+    // 接收到的返回消息
+    {"rid":"15","code":0,"data":{....}}
 
-13. 用户收到的推送消息
+```
+
+风险限额的定义如下
+```golang
+    // RiskLimit的数据结构
+    type RiskLimitDef struct {
+        Sym         string      // Symbol 交易对
+        Base        float64     // Base Risk Limit 当 Pos Val < Base 的时候，
+        BaseMMR     float64     // Base Maintenance Margin Val < Base 的时候 MMR
+        BaseMIR     float64     // Initial Margin  Val < Base 的时候 MIR
+        Step        float64     // Step  StepS = math.Ceil((Val - Base)/Step) 表示递增次数
+        StepMR      float64     // StepM  每次递增的时候，MMR MIR 的增量
+        PosSzMax    float64     // 最大持仓
+        StepIR      float64     // 每次递增的时候，MIR 的增量
+        MaxOrdVal   float64     // 单笔委托的最大价值
+    }
+```
+
+14. 查询资金中心的用户钱包信息（我的钱包） GetCcsWallets
+  NOTE: 由于资金中心的钱包信息于合约币币的钱包结构定义不同，因此单独列出来
+
+```js
+// 发送请求消息
+{
+    "req":"GetCcsWallets",
+    "rid":"9",
+    "expires":1537710967223,
+    "signature": "1234567890abcdef1234567890abcdef"
+}
+// 收到返回消息
+{
+    "rid":"9",
+    "code":0,
+    "data":[
+        {
+            "wid": "1020415BTC",                        // 主键：资金账户id，uid+Wtype
+            "uid": "1020415",                           // 用户Id
+            "coin": "BTC",                              // 币种的名称
+            "mainBal": 3.06,                            // 主账户余额
+            "otcBal": 0,                                // OTC法币账户余额
+            "lockBal": 0,                               // 锁币额度
+            "financeBal": 0,                            // 理财额度
+            "pawnBal": 0,                               //质押额度
+            "creditNum": 0                              // 欠贷款额度【负】
+        },
+        {
+            "wid": "1020415ETH",                        // 主键：资金账户id，uid+Wtype
+            "uid": "1020415",                           // 用户Id
+            "coin": "ETH",                              // 币种的名称
+            "mainBal": 8.16,                            // 主账户余额
+            "otcBal": 0,                                // OTC法币账户余额
+            "lockBal": 0,                               // 锁币额度
+            "financeBal": 0,                            // 理财额度
+            "pawnBal": 0,                               //质押额度
+            "creditNum": 0                              // 欠贷款额度【负】
+        }
+    ]
+}
+```
+
+
+15. 用户收到的推送消息
 
 用户登录后会收到的推送消息的subj有：
 
@@ -920,7 +1000,6 @@ args: {
     }
 }
 ```
-
 
 对应的数据结构定义如下:
 ```golang
@@ -1026,40 +1105,6 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 
 }
 
-```
- 14. 查询用户的风险限额GetRiskLimit(内测中)
-```JavaScript
-    /**
-    * 功能: 查询某个交易对用户的风险限额
-    * 参数说明:
-    * expires:          // 消息的有效时间
-    * rid: 10           //用户发送请求的唯一编号，由于websocket是异步通讯，用户需要通过匹配收到消息的rid和自己发送的rid来匹配操作和应答。
-    * req: 'GetRiskLimit'   // 请求的动作名称
-    * signature: ""         // 签名,参考签名的生成规则
-    * args: {
-    *  "AId": "",           // 账号的AId,
-    *  "Sym": "",           // 交易对名称
-    * }
-    */
-    // 请求发送参数
-    {"req":"GetRiskLimit","rid":"15","expires":1537712072667,"args":{"AId":"123456701",Sym:"BTC1812"},"signature": "1234567890abcdef1234567890abcdef"}
-    // 接收到的返回消息
-    {"rid":"15","code":0,"data":{....}}
-
-```
-```golang
-    // RiskLimit的数据结构
-    type RiskLimitDef struct {
-        Sym         string      // Symbol 交易对
-        Base        float64     // Base Risk Limit 当 Pos Val < Base 的时候，
-        BaseMMR     float64     // Base Maintenance Margin Val < Base 的时候 MMR
-        BaseMIR     float64     // Initial Margin  Val < Base 的时候 MIR
-        Step        float64     // Step  StepS = math.Ceil((Val - Base)/Step) 表示递增次数
-        StepMR      float64     // StepM  每次递增的时候，MMR MIR 的增量
-        PosSzMax    float64     // 最大持仓
-        StepIR      float64     // 每次递增的时候，MIR 的增量
-        MaxOrdVal   float64     // 单笔委托的最大价值
-    }
 ```
 
 
