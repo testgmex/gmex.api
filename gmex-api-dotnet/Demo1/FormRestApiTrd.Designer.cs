@@ -429,7 +429,7 @@
             this.buttonInit.Name = "buttonInit";
             this.buttonInit.Size = new System.Drawing.Size(114, 23);
             this.buttonInit.TabIndex = 72;
-            this.buttonInit.Text = "初始化";
+            this.buttonInit.Text = "测试服务器连接";
             this.buttonInit.UseVisualStyleBackColor = true;
             this.buttonInit.Click += new System.EventHandler(this.buttonInit_ClickAsync);
             // 
@@ -580,6 +580,7 @@
             this.comboBoxTrdServer.Name = "comboBoxTrdServer";
             this.comboBoxTrdServer.Size = new System.Drawing.Size(275, 20);
             this.comboBoxTrdServer.TabIndex = 30;
+            this.comboBoxTrdServer.SelectedIndexChanged += new System.EventHandler(this.comboBoxTrdServer_SelectedIndexChanged);
             // 
             // textBoxOUT
             // 

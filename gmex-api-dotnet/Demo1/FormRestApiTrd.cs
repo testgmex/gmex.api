@@ -24,19 +24,6 @@ namespace Demo1
         {
             comboBoxTrdServer.SelectedIndex = 0;
             comboBoxTrdAccType.SelectedIndex = 0;
-
-            try
-            {
-                string apikeyfile = @"user-api-key.json";
-                if (File.Exists(apikeyfile))
-                {
-                    var data = Helper.MyJsonUnmarshal<Gmex.API.Models.UserApiKeyData>(File.ReadAllText(apikeyfile));
-                    textBoxUname.Text = data.UserName;
-                    textBoxApiKey.Text = data.ApiKey;
-                    textBoxApiSecret.Text = data.ApiSecret;
-                }
-            }
-            catch (Exception) { }
         }
 
         public void LOG(string txt)
@@ -87,6 +74,7 @@ namespace Demo1
                 textBoxApiKey.Enabled = true;
                 textBoxApiSecret.Enabled = true;
                 cli4trd = null;
+                LOG($"[DEBUG] 重置结束，可以继续重新测试服务器连接了。\r\n");
                 return;
             }
            
@@ -392,6 +380,26 @@ namespace Demo1
                 LOG("[ERROR] Exception: " + ex.Message);
                 return;
             }
+        }
+
+        private void comboBoxTrdServer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var url = comboBoxTrdServer.Text.Trim();
+            try
+            {
+                string apikeyfile = @"user-api-key.json";
+                if (File.Exists(apikeyfile))
+                {
+                    var config = Helper.MyJsonUnmarshal<Dictionary<string, Gmex.API.Models.UserApiKeyData>>(File.ReadAllText(apikeyfile));
+                    if (config.ContainsKey(url))
+                    {
+                        textBoxUname.Text = config[url].UserName;
+                        textBoxApiKey.Text = config[url].ApiKey;
+                        textBoxApiSecret.Text = config[url].ApiSecret;
+                    }
+                }
+            }
+            catch (Exception) { }
         }
     }
 }

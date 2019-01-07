@@ -1072,6 +1072,7 @@
             this.comboBoxTrdServer.Name = "comboBoxTrdServer";
             this.comboBoxTrdServer.Size = new System.Drawing.Size(275, 20);
             this.comboBoxTrdServer.TabIndex = 8;
+            this.comboBoxTrdServer.SelectedIndexChanged += new System.EventHandler(this.comboBoxTrdServer_SelectedIndexChanged);
             // 
             // button7
             // 
