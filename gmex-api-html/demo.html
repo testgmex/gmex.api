@@ -410,7 +410,8 @@
                             <div style="line-height:30px">
                                 <label>可订阅合约：<input id="me1" type="text" value="" style="width:480px" /></label>
                                 <label>可订阅指数：<input id="me2" type="text" value="" style="width:480px" /></label>
-                                <input id="mbq1" type="button" route="GetAssetD" value="查询合约详情" />
+                                <input id="mbq1" type="button" route="GetAssetD" value="查询交易对数据GetAssetD" />
+                                <input id="mbq2" type="button" route="GetAssetEx" value="查询交易对扩展扩展GetAssetEx" />
                             </div>
                             <div style="line-height:30px">
                                 <label>订阅合约：<input id="me3" type="text" value="" style="width:80px" /></label>
@@ -438,7 +439,11 @@
                             <div style="line-height:30px">
                                 <label><input id="mc31" type="checkbox" name="index_GMEX_CI_BTC" />BTC指数</label>
                                 <label><input id="mc32" type="checkbox" name="index_GMEX_CI_ETH" />ETH指数</label>
-                                <label><input id="mc33" type="checkbox" name="index_GMEX_CI_GAEA" />GAEA指数</label>
+                                <!-- <label><input id="mc33" type="checkbox" name="index_GMEX_CI_GAEA" />GAEA指数</label> -->
+                                <label><input id="mc34" type="checkbox" name="index_GMEX_CI_EOS" />EOS指数</label>
+                                <label><input id="mc35" type="checkbox" name="index_GMEX_CI_XRP" />XRP指数</label>
+                                <label><input id="mc36" type="checkbox" name="index_GMEX_CI_LTC" />LTC指数</label>
+                                <label><input id="mc37" type="checkbox" name="index_GMEX_CI_ETC" />ETC指数</label>
                             </div>
                             <div style="line-height:30px">
                                 <label>查询：<input id="me4" type="text" value="" style="width:80px" /></label>
@@ -480,7 +485,8 @@
                                 <input id="tbg5" type="button" route="GetPositions" value="查询持仓记录" />
                                 <input id="tbg6" type="button" route="GetHistOrders" value="查询报单历史" />
                                 <input id="tbg7" type="button" route="GetWalletsLog" value="查询钱包记录" />
-								<input id="tbg8" type="button" route="GetRiskLimit" value="查询风险限额" />
+                                <input id="tbg8" type="button" route="GetRiskLimit" value="查询风险限额" />
+                                <input id="tbg9" type="button" route="GetAssetExCfg" value="查询交易对扩展配置GetAssetExCfg" />
                             </div>
                             <div style="line-height:30px" id="div_order1">
                                 <input id="tbordercast" type="button" value="下单" />

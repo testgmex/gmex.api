@@ -122,7 +122,7 @@ gaea.prototype.request = function (route, pmsg, cb) {
     var msg = {}
     msg.req = route;
     msg.rid = String(this.rid++);
-    msg.expires = Date.now() + 1000;
+    msg.expires = Date.now() + 3500;
     msg.args = pmsg;
     
     if ( this.api_secret && this.api_secret.length > 1 ) {
