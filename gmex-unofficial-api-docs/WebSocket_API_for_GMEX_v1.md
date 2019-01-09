@@ -109,6 +109,8 @@ type AssetD struct {
     Turnover            float64 // 总成交额
     PrzIndex            float64 // 指数价格
     PosLmtStart         int64   // 个人持仓比例激活条件
+    PrzRFMin            float64 // 当前涨跌价格范围 Prz Rise Fall Range
+    PrzRFMax            float64 // 当前涨跌价格范围最大值
     FeeMkrR             float64 // 提供流动性的费率
     FeeTkrR             float64 // 消耗流动性的费率
     Mult                float64 // 乘数
@@ -126,6 +128,65 @@ type AssetD struct {
     FundingNext         int64   // 下次结算时间戳
     FundingTolerance    float64 // 偏移宽容度
     FundingFeeR         float64 // Funding结算佣金
+    FeeCoin             string  // 如果允许使用第三种货币支付手续费，则配置本项目
+    FeeDiscR            float64 // 如果允许使用第三种货币支付手续费，这里配置折扣率
+    Grp                 int64   // 交易对所属的分组ID，仅仅是一个逻辑分组概念.
+}
+
+```
+
+有些交易对规则特别复杂，为此特别设置了一些扩展参数数据，对应的API指令为： GetAssetEx，使用和上面API一样。
+注意返回的结果是数组，只有配置了的交易对才会有，没配置的则没有数据。
+
+对应的结构定义如下：
+
+```golang
+type FeeMethod int32
+
+const (
+    FeeMethod_FM_IN_FROM_TO         FeeMethod = 0
+    FeeMethod_FM_IN_FROM            FeeMethod = 1
+    FeeMethod_FM_IN_FROM_TO_FEECOIN FeeMethod = 2
+    FeeMethod_FM_IN_FROM_FEECOIN    FeeMethod = 3
+)
+
+type AssetEx struct {
+    Sym string `protobuf:"bytes,1,opt,name=Sym,proto3" json:"Sym,omitempty"`
+    // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 手续费计费方法
+    FM FeeMethod `protobuf:"varint,5,opt,name=FM,proto3,enum=Protocol.FeeMethod" json:"FM,omitempty"`
+    // 尚未支持
+    // 手续费，货币符号，如果未指定，则现货：按照收入额进行收取。期货：按照SettleCoin进行。
+    // 如果指定了FeeCoin则从该币种钱包内进行扣除。注意到，如果该钱包余额不足，则依旧使用SettleCoin进行
+    FeeCoin string `protobuf:"bytes,6,opt,name=FeeCoin,proto3" json:"FeeCoin,omitempty"`
+    // 折扣率
+    FeeDiscR gaea_Num.Flt `protobuf:"bytes,7,opt,name=FeeDiscR,proto3,customtype=gaea/Num.Flt" json:"FeeDiscR" xorm:"char(64)"`
+    // 开放交易时间 (日内,毫秒)
+    OnAt uint64 `protobuf:"varint,10,opt,name=OnAt,proto3" json:"OnAt,omitempty"`
+    // 关闭交易时间 (日内,毫秒)
+    OffAt uint64 `protobuf:"varint,11,opt,name=OffAt,proto3" json:"OffAt,omitempty"`
+    // 价格涨价幅度 万分比 * 10000
+    RiseR int64 `protobuf:"varint,15,opt,name=RiseR,proto3" json:"RiseR,omitempty"`
+    // 价格跌价幅度 万分比 * 10000
+    FallR int64 `protobuf:"varint,16,opt,name=FallR,proto3" json:"FallR,omitempty"`
+    // 最小价格
+    PrzMin float64 `protobuf:"fixed64,17,opt,name=PrzMin,proto3" json:"PrzMin,omitempty"`
+    // 买入量
+    LmtBid float64 `protobuf:"fixed64,20,opt,name=LmtBid,proto3" json:"LmtBid,omitempty"`
+    // 卖出量
+    LmtAsk float64 `protobuf:"fixed64,21,opt,name=LmtAsk,proto3" json:"LmtAsk,omitempty"`
+    // 买入卖出总量
+    LmtBidAsk float64 `protobuf:"fixed64,22,opt,name=LmtBidAsk,proto3" json:"LmtBidAsk,omitempty"`
+    // 买入次数
+    LmtNumBid uint64 `protobuf:"varint,23,opt,name=LmtNumBid,proto3" json:"LmtNumBid,omitempty"`
+    // 卖出次数
+    LmtNumAsk uint64 `protobuf:"varint,24,opt,name=LmtNumAsk,proto3" json:"LmtNumAsk,omitempty"`
+    // 买入卖出总次数
+    LmtNumBidAsk uint64 `protobuf:"varint,25,opt,name=LmtNumBidAsk,proto3" json:"LmtNumBidAsk,omitempty"`
+    // 从0点开始，在每天的什么时间，开始重置统计值(绝对时间,毫秒)
+    SumAt uint64 `protobuf:"varint,30,opt,name=SumAt,proto3" json:"SumAt,omitempty"`
+    // 重置间隔
+    SumInterval uint64 `protobuf:"varint,31,opt,name=SumInterval,proto3" json:"SumInterval,omitempty"`
 }
 
 ```
@@ -1153,4 +1214,9 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 | 29      |  NOT_FOUND_MKT     | 未找到交易对 |
 | 30      |  EXCEED_MAXORDVAL     | 超过最大委托价值 |
 | 31      |  WILL_LIQUIDATE     | 将导致爆仓、强平 |
+| 32      |  NOT_IN_TRADE_PERIOD     | 非交易时间 |
+| 33      |  EXCEED_RAISE_FALL_R     | EXCEED_RAISE_FALL_R |
+| 34      |  PRZ_TOO_LOW     | 超出最小价格闲置 |
+| 35      |  EXCEED_TRADE_VOL     | 超出交易量限制 |
+| 36      |  EXCEED_TRADE_COUNT     | 超出交易次数限制 |
 | 64      |  NO_DEFAULT_RISKLIMIT     | 没有指定风险限额 |

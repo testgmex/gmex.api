@@ -49,6 +49,7 @@
     <Compile Include="GmexClient.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Models\AssetD.cs" />
+    <Compile Include="Models\AssetEx.cs" />
     <Compile Include="Models\CcsWallet.cs" />
     <Compile Include="Models\ServerInfo.cs" />
     <Compile Include="Models\UserApiKeyData.cs" />

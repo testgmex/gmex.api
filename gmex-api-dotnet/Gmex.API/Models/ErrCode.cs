@@ -31,9 +31,14 @@
         RATELIMIT = 26,             // 限速
         USER_CANCELED = 27,         // 用户撤销
         NOT_FOUND_WLT = 28,         // 无法找到钱包
-        NOT_FOUND_MKT = 29,         //未找到交易对
+        NOT_FOUND_MKT = 29,         // 未找到交易对
         EXCEED_MAXORDVAL = 30,      // 超过最大委托价值
         WILL_LIQUIDATE = 31,        // 将导致爆仓、强平
+        NOT_IN_TRADE_PERIOD = 32,	// 非交易时间
+        EXCEED_RAISE_FALL_R = 33,	// 超过涨跌停价格闲置
+        PRZ_TOO_LOW = 34,			// 超出最小价格闲置
+        EXCEED_TRADE_VOL = 35,		// 超出交易量限制
+        EXCEED_TRADE_COUNT = 36,	// 超出交易次数限制
         NO_DEFAULT_RISKLIMIT = 64,  // 没有指定风险限额
     }
 }

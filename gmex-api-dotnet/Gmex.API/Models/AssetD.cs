@@ -98,6 +98,16 @@ namespace Gmex.API.Models
         public long PosLmtStart { get; set; }
 
         /// <summary>
+        ///  当前涨跌价格范围 Prz Rise Fall Range
+        /// </summary>
+        public decimal PrzRFMin { get; set; }
+
+        /// <summary>
+        /// 当前涨跌价格范围最大值
+        /// </summary>
+        public decimal PrzRFMax { get; set; }
+
+        /// <summary>
         /// 提供流动性的费率
         /// </summary>
         public decimal FeeMkrR { get; set; }
@@ -182,5 +192,19 @@ namespace Gmex.API.Models
         /// </summary>
         public decimal FundingFeeR { get; set; }
 
+        /// <summary>
+        /// 如果允许使用第三种货币支付手续费，则配置本项目
+        /// </summary>
+        public string FeeCoin { get; set; }
+
+        /// <summary>
+        /// 如果允许使用第三种货币支付手续费，这里配置折扣率
+        /// </summary>
+        public decimal FeeDiscR { get; set; }
+
+        /// <summary>
+        /// 交易对所属的分组ID，仅仅是一个逻辑分组概念.
+        /// </summary>
+        public long Grp { get; set; }
     }
 }
