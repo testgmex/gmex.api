@@ -23,7 +23,7 @@ GMEX官方的生产环境：
 
 ## 行情API
 
-1. 获取交易对/合约列表： GetAssetD
+1. 获取交易对/合约列表： GetAssetD/GetAssetEx/GetCompositeIndex
 ```JavaScript
 // 发送请求消息
 {"req":"GetAssetD","rid":"0","expires":1537706670830}
@@ -86,10 +86,13 @@ GMEX官方的生产环境：
 |rid|用户发送请求的唯一编号，由于websocket是异步通讯，用户需要通过匹配收到消息的rid和自己发送的rid来匹配操作和应答。|
 |expires|消息超时，毫秒，建议每次发送请求时填写当前时间加1秒。一般宜在初始化时先用Time消息获取服务端时间,可以相对时差与服务端保持同步。|
 
+有些交易对规则特别复杂，为此特别设置了一些扩展参数数据，对应的API指令为： GetAssetEx，使用和上面API一样。
+注意返回的结果是数组，只有配置了的交易对才会有，没配置的则没有数据。
 
-交易对/合约的结构定义如下：
-
+交易对相关对应的结构定义如下：
 ```golang
+
+// **交易对/合约的结构定义**
 type AssetD struct {
     Sym                 string  // 合约符合/交易对符号
     Beg                 int64   // 开始时间,毫秒
@@ -133,14 +136,7 @@ type AssetD struct {
     Grp                 int64   // 交易对所属的分组ID，仅仅是一个逻辑分组概念.
 }
 
-```
-
-有些交易对规则特别复杂，为此特别设置了一些扩展参数数据，对应的API指令为： GetAssetEx，使用和上面API一样。
-注意返回的结果是数组，只有配置了的交易对才会有，没配置的则没有数据。
-
-对应的结构定义如下：
-
-```golang
+// **定义手续分的收取方式**
 type FeeMethod int32
 
 const (
@@ -150,6 +146,7 @@ const (
     FeeMethod_FM_IN_FROM_FEECOIN    FeeMethod = 3
 )
 
+// **交易对的扩展配置数据**
 type AssetEx struct {
     // 合约符合/交易对符号
     Sym  string  `json:"Sym"`
@@ -205,7 +202,7 @@ type AssetEx struct {
     "args":{}
 }
 
-// 收到返回消息
+// 收到返回消息, 成功返回的结构是字符串数组
 {
     "rid":"1",
     "code":0,
@@ -307,8 +304,6 @@ type AssetEx struct {
     "FundingShortR":0             // 当前未使用字段
     }
 }
-
-
 
 // 发送取消订阅请求消息
 {
@@ -451,7 +446,9 @@ type AssetEx struct {
 
     用户下单时指定自己的子账户,该单的风险可以控制在这个子账户范围内,从而可以控制风险.
 
-+ 钱包分为币币钱包、合约钱包、我的钱包三种类型,分别对应的AId为:合约钱包AId=UID+'01' 币币钱包AId=UID+'02' 我的钱包AId=UID+'03'
++ 钱包分为合约钱包、币币钱包、资金中心钱包(有时称为我的钱包)三种类型, 通常操作合约钱包时需要使用AId为UID+'01'，操作币币钱包时需要使用AId为UID+'02'，
+操作资金中心钱包时则不需要这个参数。
+
 
 2. 查询当前系统的合约列表(必须参数 AId)： GetAssetD
 
@@ -510,12 +507,121 @@ type AssetEx struct {
 }
 ```
 
-返回的结果和行情中获取到的数据是一样的。
+返回的结果和行情中获取到的数据是一样的。注意这里必须使用AId，因此合约和币币是分开来获取到的。
+
+```golang
+
+// **交易对/合约的结构定义**
+type AssetD struct {
+    Sym                 string  // 合约符合/交易对符号
+    Beg                 int64   // 开始时间,毫秒
+    Expire              int64   // 到期时间,毫秒
+    PrzMaxChg           int32   // 市价委托的撮合的最多次数。比如5
+    PrzMinInc           float64 // 最小的价格变化
+    PrzMax              float64 // 最大委托价格
+    OrderMaxQty         float64 // 最大委托数量
+    OrderMinQty         float64 // 最小委托数量
+    LotSz               float64 // 最小合约数量,每次买卖的合约数量必须是LotSz的倍数,当前只支持为1;
+    PrzM                float64 // 标记价格
+    MIR                 float64 // 起始保证金率
+    MMR                 float64 // 维持保证金率
+    PrzLatest           float64 // 最新成交价格
+    TotalVol            float64 // 总交易量
+    OpenInterest        int64   // 持仓量
+    Turnover            float64 // 总成交额
+    PrzIndex            float64 // 指数价格
+    PosLmtStart         int64   // 个人持仓比例激活条件
+    PrzRFMin            float64 // 当前涨跌价格范围 Prz Rise Fall Range
+    PrzRFMax            float64 // 当前涨跌价格范围最大值
+    FeeMkrR             float64 // 提供流动性的费率
+    FeeTkrR             float64 // 消耗流动性的费率
+    Mult                float64 // 乘数
+    FromC               string  // 从什么货币
+    ToC                 string  // 兑换为什么货币
+    TrdCls              int32   // 交易类型, 1-现货交易, 2-期货交易, 3-永续
+    SettleCoin          string  // 结算货币
+    QuoteCoin           string  // 报价货币
+    SettleR             float64 // 结算费率
+    DenyOpenAfter       int64   // 到期前禁止开仓时间,毫秒
+    FundingLongR        float64 // 当前周期内的资金费率
+    FundingPredictedR   float64 // 下个周期预测的资金费率
+    FundingShortR       float64 // 当前未使用字段
+    FundingInterval     uint32  // 结算间隔(毫秒)
+    FundingNext         int64   // 下次结算时间戳
+    FundingTolerance    float64 // 偏移宽容度
+    FundingFeeR         float64 // Funding结算佣金
+    FeeCoin             string  // 如果允许使用第三种货币支付手续费，则配置本项目
+    FeeDiscR            float64 // 如果允许使用第三种货币支付手续费，这里配置折扣率
+    Grp                 int64   // 交易对所属的分组ID，仅仅是一个逻辑分组概念.
+}
+
+// **定义手续分的收取方式**
+type FeeMethod int32
+
+const (
+    FeeMethod_FM_IN_FROM_TO         FeeMethod = 0
+    FeeMethod_FM_IN_FROM            FeeMethod = 1
+    FeeMethod_FM_IN_FROM_TO_FEECOIN FeeMethod = 2
+    FeeMethod_FM_IN_FROM_FEECOIN    FeeMethod = 3
+)
+
+// **交易对的扩展配置数据**
+type AssetEx struct {
+    // 合约符合/交易对符号
+    Sym  string  `json:"Sym"`
+    // 手续费计费方法
+    FM FeeMethod `json:"FM,omitempty"`
+    // 手续费，货币符号，如果未指定，则现货：按照收入额进行收取。期货：按照SettleCoin进行。
+    // 如果指定了FeeCoin则从该币种钱包内进行扣除。注意到，如果该钱包余额不足，则依旧使用SettleCoin进行
+    FeeCoin string `json:"FeeCoin,omitempty"`
+    // 折扣率
+    FeeDiscR float64 `json:"FeeDiscR"`
+    // 开放交易时间 (日内,毫秒)
+    OnAt uint64 `json:"OnAt,omitempty"`
+    // 关闭交易时间 (日内,毫秒)
+    OffAt uint64 `json:"OffAt,omitempty"`
+    // 价格涨价幅度 万分比 * 10000
+    RiseR int64 `json:"RiseR,omitempty"`
+    // 价格跌价幅度 万分比 * 10000
+    FallR int64 `json:"FallR,omitempty"`
+    // 最小价格
+    PrzMin float64 `json:"PrzMin,omitempty"`
+    // 买入量
+    LmtBid float64 `json:"LmtBid,omitempty"`
+    // 卖出量
+    LmtAsk float64 `json:"LmtAsk,omitempty"`
+    // 买入卖出总量
+    LmtBidAsk float64 `json:"LmtBidAsk,omitempty"`
+    // 买入次数
+    LmtNumBid uint64 `json:"LmtNumBid,omitempty"`
+    // 卖出次数
+    LmtNumAsk uint64 `json:"LmtNumAsk,omitempty"`
+    // 买入卖出总次数
+    LmtNumBidAsk uint64 `json:"LmtNumBidAsk,omitempty"`
+    // 委托的买价偏离盘口比例(小数)
+    BidPrzR float64 `json:"BidPrzR,omitempty"`
+    // 委托的卖价偏离盘口比例(小数)
+    AskPrzR float64 `json:"AskPrzR,omitempty"`
+    // 从0点开始，在每天的什么时间，开始重置统计值(绝对时间,毫秒)
+    SumAt uint64 `son:"SumAt,omitempty"`
+    // 重置间隔
+    SumInterval uint64 `json:"SumInterval,omitempty"`
+}
+
+```
 
 
-3. 查询用户子账号的钱包列表信息(必须参数 AId)： GetWallets
+3. 查询用户子账号的钱包列表信息： GetWallets 和 GetCcsWallets
+
+用户在交易所中的钱包分为 资金中心钱包(我的钱包)，合约钱包，币币钱包 三种，每个用户都会有这个三个钱包的数据。
+资金中心的钱包的信息数据结构和另外两个有较大不同，因此单独定义之，合约钱包和币币钱包的数据结构一样。
+简言之：
+- 查询合约钱包： GetWallets （AId=UID+01）
+- 查询币币钱包： GetWallets （AId=UID+02）
+- 查询资金中心钱包： GetCcsWallets
 
 ```js
+// 示例： GetWallets
 // 发送请求消息
 {
     "req":"GetWallets",
@@ -548,6 +654,50 @@ type AssetEx struct {
     ]
 }
 ```
+
+资金中心钱包（我的钱包）查询示例：
+
+```js
+
+// 示例： GetCcsWallets，注意返回的结构体和上面的是不一样的。
+// 发送请求消息
+{
+    "req":"GetCcsWallets",
+    "rid":"9",
+    "expires":1537710967223,
+    "signature": "1234567890abcdef1234567890abcdef"
+}
+// 收到返回消息
+{
+    "rid":"9",
+    "code":0,
+    "data":[
+        {
+            "wid": "1020415BTC",                        // 主键：资金账户id，uid+Wtype
+            "uid": "1020415",                           // 用户Id
+            "coin": "BTC",                              // 币种的名称
+            "mainBal": 3.06,                            // 主账户余额
+            "otcBal": 0,                                // OTC法币账户余额
+            "lockBal": 0,                               // 锁币额度
+            "financeBal": 0,                            // 理财额度
+            "pawnBal": 0,                               //质押额度
+            "creditNum": 0                              // 欠贷款额度【负】
+        },
+        {
+            "wid": "1020415ETH",                        // 主键：资金账户id，uid+Wtype
+            "uid": "1020415",                           // 用户Id
+            "coin": "ETH",                              // 币种的名称
+            "mainBal": 8.16,                            // 主账户余额
+            "otcBal": 0,                                // OTC法币账户余额
+            "lockBal": 0,                               // 锁币额度
+            "financeBal": 0,                            // 理财额度
+            "pawnBal": 0,                               //质押额度
+            "creditNum": 0                              // 欠贷款额度【负】
+        }
+    ]
+}
+```
+
 
 
 4. 查询用户子账号的最近的成交记录(必须参数 AId)： GetTrades
@@ -857,7 +1007,7 @@ type AssetEx struct {
 }
 ```
 
-报单的参数说明：
+报单的基本参数说明：
 ```js
 args: {
 "AId": "账户Id",
@@ -873,6 +1023,8 @@ args: {
 "PrzChg" 0,                 // 市价成交档位
 }
 ```
+更多关于报单数据结构的的参数定义和说明，请参考下面的推送消息章节里的结构定义。
+
 
 11. 撤单： OrderDel
 ```js
@@ -988,48 +1140,6 @@ args: {
     }
 ```
 
-14. 查询资金中心的用户钱包信息（我的钱包） GetCcsWallets
-  NOTE: 由于资金中心的钱包信息于合约币币的钱包结构定义不同，因此单独列出来
-
-```js
-// 发送请求消息
-{
-    "req":"GetCcsWallets",
-    "rid":"9",
-    "expires":1537710967223,
-    "signature": "1234567890abcdef1234567890abcdef"
-}
-// 收到返回消息
-{
-    "rid":"9",
-    "code":0,
-    "data":[
-        {
-            "wid": "1020415BTC",                        // 主键：资金账户id，uid+Wtype
-            "uid": "1020415",                           // 用户Id
-            "coin": "BTC",                              // 币种的名称
-            "mainBal": 3.06,                            // 主账户余额
-            "otcBal": 0,                                // OTC法币账户余额
-            "lockBal": 0,                               // 锁币额度
-            "financeBal": 0,                            // 理财额度
-            "pawnBal": 0,                               //质押额度
-            "creditNum": 0                              // 欠贷款额度【负】
-        },
-        {
-            "wid": "1020415ETH",                        // 主键：资金账户id，uid+Wtype
-            "uid": "1020415",                           // 用户Id
-            "coin": "ETH",                              // 币种的名称
-            "mainBal": 8.16,                            // 主账户余额
-            "otcBal": 0,                                // OTC法币账户余额
-            "lockBal": 0,                               // 锁币额度
-            "financeBal": 0,                            // 理财额度
-            "pawnBal": 0,                               //质押额度
-            "creditNum": 0                              // 欠贷款额度【负】
-        }
-    ]
-}
-```
-
 
 15. 用户收到的推送消息
 
@@ -1066,6 +1176,7 @@ args: {
 ```
 
 对应的数据结构定义如下:
+
 ```golang
 type Ord struct {    // **报单结构体字段定义说明**
     UId     string   // 用户Id
@@ -1122,6 +1233,7 @@ type Position struct {    // **持仓结构体字段定义说明**
     ADLLight int32   // ADL红绿灯
 }
 
+// **用户钱包（合约和币币）**
 type Wlt struct {    // **钱包结构体字段定义说明**
     UId     string   // 用户Id
     AId     string   // 账户Id
@@ -1218,8 +1330,8 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 | 30      |  EXCEED_MAXORDVAL     | 超过最大委托价值 |
 | 31      |  WILL_LIQUIDATE     | 将导致爆仓、强平 |
 | 32      |  NOT_IN_TRADE_PERIOD     | 非交易时间 |
-| 33      |  EXCEED_RAISE_FALL_R     | EXCEED_RAISE_FALL_R |
-| 34      |  PRZ_TOO_LOW     | 超出最小价格闲置 |
+| 33      |  EXCEED_RAISE_FALL_R     | 超过涨跌停价格限制 |
+| 34      |  PRZ_TOO_LOW     | 超出最小价格限制 |
 | 35      |  EXCEED_TRADE_VOL     | 超出交易量限制 |
 | 36      |  EXCEED_TRADE_COUNT     | 超出交易次数限制 |
 | 64      |  NO_DEFAULT_RISKLIMIT     | 没有指定风险限额 |
