@@ -82,6 +82,38 @@ namespace Gmex.API.REST
             return results;
         }
 
+        public async Task<List<Models.AssetEx>> GetAssetExAsync()
+        {
+            var results = new List<Models.AssetEx>();
+            var url = $"{m_url}/GetAssetEx";
+            using (var httpClient = new HttpClient())
+            {
+                var res = await httpClient.GetAsync(url);
+                var contentStr = await res.Content.ReadAsStringAsync();
+                var resp = Helper.MyJsonUnmarshal<RestResponse>(contentStr);
+                if (resp != null && resp.Code == 0)
+                {
+                    var array = resp.Data as Newtonsoft.Json.Linq.JArray;
+                    if (array != null)
+                    {
+                        foreach (var item in array)
+                        {
+                            var row = item.ToObject<Models.AssetEx>();
+                            if (row != null)
+                            {
+                                results.Add(row);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException($"invalid response: code={resp?.Code}");
+                }
+            }
+            return results;
+        }
+
         public async Task<List<Models.MktCompositeIndexTick>> GetCompositeIndexAsync()
         {
             var results = new List<Models.MktCompositeIndexTick>();

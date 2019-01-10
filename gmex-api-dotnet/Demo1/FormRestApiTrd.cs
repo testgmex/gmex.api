@@ -44,7 +44,7 @@ namespace Demo1
             string uid = cli4trd?.GetCurrentUId();
             if (uid == null || uid.Length < 1)
             {
-                if (comboBoxTrdServer.Text.Length<1 || textBoxUname.Text.Length<1 || textBoxApiKey.Text.Length<1 || textBoxApiSecret.Text.Length<1)
+                if (comboBoxTrdServer.Text.Length < 1 || textBoxUname.Text.Length < 1 || textBoxApiKey.Text.Length < 1 || textBoxApiSecret.Text.Length < 1)
                 {
                     LOG("[WARN] 请先正确填写参数。。。\r\n");
                     return null;
@@ -77,7 +77,7 @@ namespace Demo1
                 LOG($"[DEBUG] 重置结束，可以继续重新测试服务器连接了。\r\n");
                 return;
             }
-           
+
             try
             {
                 var client = new RESTClient4Trade(comboBoxTrdServer.Text, textBoxUname.Text, textBoxApiKey.Text, textBoxApiSecret.Text);
@@ -143,7 +143,8 @@ namespace Demo1
                 {
                     comboBoxTrdSym.SelectedIndex = 0;
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 LOG("[ERROR] Exception: " + ex.Message + "\r\n");
             }

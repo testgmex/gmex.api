@@ -350,6 +350,28 @@ namespace Gmex.API.WS
             },
             cancellationToken);
         }
+
+        public async Task REQ_GetAssetExAsync(Action<int, List<Models.AssetEx>> cb, CancellationToken cancellationToken)
+        {
+            // {"rid":"40","code":0,"data":[{Sym...},... ]}
+            var req = new Gmex.API.WS.WsMarketMessageRequest("GetAssetEx", null);
+            await this.SendRequestAsync(req, (code, data) =>
+            {
+                var instruments = new List<Models.AssetEx>();
+                if (code == 0)
+                {
+                    var array = data as Newtonsoft.Json.Linq.JArray;
+                    //var lines = data as Array;
+                    foreach (var l in array)
+                    {
+                        instruments.Add(l.ToObject<Models.AssetEx>());
+                    }
+                }
+                cb(code, instruments);
+            },
+            cancellationToken);
+        }
+
         public async Task REQ_GetHistKLine(string sym, Models.MktKLineType typ, int beginSec, int offset, int count, Action<int, Models.MktQueryKLineHistoryResult> cb, CancellationToken cancellationToken)
         {
             var args = new Models.MktQueryKLineHistoryRequestArgs

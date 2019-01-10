@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Gmex.API.Models
 {
-    class AssetEx
+    public class AssetEx
     {
         /// <summary>
         /// 合约符合/交易对符号，如 BTC.USDT, BTC.BTC, BTC1903, BTC/USDT

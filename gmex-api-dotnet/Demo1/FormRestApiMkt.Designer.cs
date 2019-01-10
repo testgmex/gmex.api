@@ -64,6 +64,7 @@
             this.buttonGetTime = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
             this.comboBoxMktServer = new System.Windows.Forms.ComboBox();
+            this.buttonGetAssetEx = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -261,6 +262,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.buttonGetAssetEx);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.comboBoxMktSym);
             this.groupBox1.Controls.Add(this.buttonGetAssetD);
@@ -312,9 +314,9 @@
             // 
             // buttonGetOrd20
             // 
-            this.buttonGetOrd20.Location = new System.Drawing.Point(706, 20);
+            this.buttonGetOrd20.Location = new System.Drawing.Point(772, 20);
             this.buttonGetOrd20.Name = "buttonGetOrd20";
-            this.buttonGetOrd20.Size = new System.Drawing.Size(151, 23);
+            this.buttonGetOrd20.Size = new System.Drawing.Size(116, 23);
             this.buttonGetOrd20.TabIndex = 64;
             this.buttonGetOrd20.Text = "20档盘口行情";
             this.buttonGetOrd20.UseVisualStyleBackColor = true;
@@ -322,9 +324,9 @@
             // 
             // buttonGetTick
             // 
-            this.buttonGetTick.Location = new System.Drawing.Point(360, 20);
+            this.buttonGetTick.Location = new System.Drawing.Point(511, 20);
             this.buttonGetTick.Name = "buttonGetTick";
-            this.buttonGetTick.Size = new System.Drawing.Size(151, 23);
+            this.buttonGetTick.Size = new System.Drawing.Size(114, 23);
             this.buttonGetTick.TabIndex = 58;
             this.buttonGetTick.Text = "聚合行情/tick";
             this.buttonGetTick.UseVisualStyleBackColor = true;
@@ -332,9 +334,9 @@
             // 
             // buttonGetTrdRec
             // 
-            this.buttonGetTrdRec.Location = new System.Drawing.Point(531, 20);
+            this.buttonGetTrdRec.Location = new System.Drawing.Point(639, 20);
             this.buttonGetTrdRec.Name = "buttonGetTrdRec";
-            this.buttonGetTrdRec.Size = new System.Drawing.Size(151, 23);
+            this.buttonGetTrdRec.Size = new System.Drawing.Size(116, 23);
             this.buttonGetTrdRec.TabIndex = 61;
             this.buttonGetTrdRec.Text = "最近成交记录";
             this.buttonGetTrdRec.UseVisualStyleBackColor = true;
@@ -466,6 +468,16 @@
             this.comboBoxMktServer.Size = new System.Drawing.Size(275, 20);
             this.comboBoxMktServer.TabIndex = 39;
             // 
+            // buttonGetAssetEx
+            // 
+            this.buttonGetAssetEx.Location = new System.Drawing.Point(346, 20);
+            this.buttonGetAssetEx.Name = "buttonGetAssetEx";
+            this.buttonGetAssetEx.Size = new System.Drawing.Size(121, 23);
+            this.buttonGetAssetEx.TabIndex = 65;
+            this.buttonGetAssetEx.Text = "获取交易对扩展属性";
+            this.buttonGetAssetEx.UseVisualStyleBackColor = true;
+            this.buttonGetAssetEx.Click += new System.EventHandler(this.buttonGetAssetEx_ClickAsync);
+            // 
             // FormRestApiMkt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -527,5 +539,6 @@
         private System.Windows.Forms.TextBox textBoxCountIdx;
         private System.Windows.Forms.ComboBox comboBoxMktIndex;
         private System.Windows.Forms.Button buttonGetServerInfo;
+        private System.Windows.Forms.Button buttonGetAssetEx;
     }
 }

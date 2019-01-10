@@ -855,5 +855,27 @@ namespace Demo1
             }
             catch (Exception) { }
         }
+
+        private async void buttonGetAssetEx_ClickAsync(object sender, EventArgs e)
+        {
+            if (!IsClient4MarketOK())
+            {
+                LOG("[WARN] market client is not connected!\r\n");
+                return;
+            }
+            await cli4mkt.REQ_GetAssetDAsync((code, instruments) =>
+            {
+
+                UI_ACTION(() =>
+                {
+                    foreach (var inst in instruments)
+                    {
+                        LOG("<< AssetEx: " + inst.Sym + "\r\n");
+                    }
+                });
+
+
+            }, cts4mkt.Token);
+        }
     }
 }

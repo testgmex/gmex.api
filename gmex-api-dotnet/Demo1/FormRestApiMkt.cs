@@ -46,39 +46,60 @@ namespace Demo1
         private async void buttonGetTime_ClickAsync(object sender, EventArgs e)
         {
             if (comboBoxMktServer.Text.Length < 4) return;
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var delta = await client.GetTimeAsync();
-            LOG($"[Time]<< time delta(ms): {delta}\r\n");
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var delta = await client.GetTimeAsync();
+                LOG($"[Time]<< time delta(ms): {delta}\r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
         }
 
         private async void buttonGetServerInfo_ClickAsync(object sender, EventArgs e)
         {
             if (comboBoxMktServer.Text.Length < 4) return;
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetServerInfoAsync();
-            LOG($"[ServerInfo] << {Helper.MyJsonMarshal(ret)} \r\n");
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetServerInfoAsync();
+                LOG($"[ServerInfo] << {Helper.MyJsonMarshal(ret)} \r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
         }
 
         private async void buttonGetAssetD_ClickAsync(object sender, EventArgs e)
         {
             if (comboBoxMktServer.Text.Length < 4) return;
 
-            comboBoxMktSym.Items.Clear();
-
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetAssetDAsync();
-
-            LOG($"[GetAssetD] <<");
-            foreach (var item in ret)
+            try
             {
-                comboBoxMktSym.Items.Add(item.Sym);
-                LOG($"{Helper.MyJsonMarshal(item)}\r\n");
+                comboBoxMktSym.Items.Clear();
+
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetAssetDAsync();
+
+                LOG($"[GetAssetD] <<");
+                foreach (var item in ret)
+                {
+                    comboBoxMktSym.Items.Add(item.Sym);
+                    LOG($"{Helper.MyJsonMarshal(item)}\r\n");
+                }
+                LOG($"========\r\n");
+
+                if (comboBoxMktSym.Items.Count > 0)
+                {
+                    comboBoxMktSym.SelectedIndex = 0;
+                }
             }
-            LOG($"========\r\n");
-
-            if (comboBoxMktSym.Items.Count > 0)
+            catch (Exception ex)
             {
-                comboBoxMktSym.SelectedIndex = 0;
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
             }
         }
 
@@ -87,22 +108,29 @@ namespace Demo1
         {
             if (comboBoxMktServer.Text.Length < 4) return;
 
-            comboBoxMktIndex.Items.Clear();
-
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetCompositeIndexAsync();
-
-            LOG($"[GetCompositeIndex] <<");
-            foreach (var item in ret)
+            try
             {
-                comboBoxMktIndex.Items.Add(item.Sym);
-                LOG($"{Helper.MyJsonMarshal(item)}\r\n");
+                comboBoxMktIndex.Items.Clear();
+
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetCompositeIndexAsync();
+
+                LOG($"[GetCompositeIndex] <<");
+                foreach (var item in ret)
+                {
+                    comboBoxMktIndex.Items.Add(item.Sym);
+                    LOG($"{Helper.MyJsonMarshal(item)}\r\n");
+                }
+                LOG($"========\r\n");
+
+                if (comboBoxMktIndex.Items.Count > 0)
+                {
+                    comboBoxMktIndex.SelectedIndex = 0;
+                }
             }
-            LOG($"========\r\n");
-
-            if (comboBoxMktIndex.Items.Count > 0)
+            catch (Exception ex)
             {
-                comboBoxMktIndex.SelectedIndex = 0;
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
             }
         }
 
@@ -111,9 +139,16 @@ namespace Demo1
             if (comboBoxMktServer.Text.Length < 4) return;
             if (comboBoxMktSym.Text.Length < 1) return;
 
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetTickAsync(comboBoxMktSym.Text);
-            LOG($"[GetTick] << {Helper.MyJsonMarshal(ret)} \r\n");
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetTickAsync(comboBoxMktSym.Text);
+                LOG($"[GetTick] << {Helper.MyJsonMarshal(ret)} \r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
         }
 
         private async void buttonIndexTick_ClickAsync(object sender, EventArgs e)
@@ -121,9 +156,16 @@ namespace Demo1
             if (comboBoxMktServer.Text.Length < 4) return;
             if (comboBoxMktIndex.Text.Length < 1) return;
 
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetIndexTickAsync(comboBoxMktIndex.Text);
-            LOG($"[GetIndexTick] << {Helper.MyJsonMarshal(ret)} \r\n");
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetIndexTickAsync(comboBoxMktIndex.Text);
+                LOG($"[GetIndexTick] << {Helper.MyJsonMarshal(ret)} \r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
         }
 
         private async void buttonGetTrdRec_ClickAsync(object sender, EventArgs e)
@@ -131,9 +173,16 @@ namespace Demo1
             if (comboBoxMktServer.Text.Length < 4) return;
             if (comboBoxMktSym.Text.Length < 1) return;
 
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetTradesAsync(comboBoxMktSym.Text);
-            LOG($"[GetTrades] << {Helper.MyJsonMarshal(ret)} \r\n");
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetTradesAsync(comboBoxMktSym.Text);
+                LOG($"[GetTrades] << {Helper.MyJsonMarshal(ret)} \r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
         }
 
         private async void buttonGetOrd20_ClickAsync(object sender, EventArgs e)
@@ -141,9 +190,16 @@ namespace Demo1
             if (comboBoxMktServer.Text.Length < 4) return;
             if (comboBoxMktSym.Text.Length < 1) return;
 
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetOrd20Async(comboBoxMktSym.Text);
-            LOG($"[GetOrd20] << {Helper.MyJsonMarshal(ret)} \r\n");
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetOrd20Async(comboBoxMktSym.Text);
+                LOG($"[GetOrd20] << {Helper.MyJsonMarshal(ret)} \r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
         }
 
         private async void buttonGetKLineSym_ClickAsync(object sender, EventArgs e)
@@ -164,9 +220,16 @@ namespace Demo1
             {
                 return;
             }
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetHistKLineAsync(comboBoxMktSym.Text, typ, beginSec, offset, count);
-            LOG($"[GetHistKLine] << {Helper.MyJsonMarshal(ret)} \r\n");
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetHistKLineAsync(comboBoxMktSym.Text, typ, beginSec, offset, count);
+                LOG($"[GetHistKLine] << {Helper.MyJsonMarshal(ret)} \r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
         }
 
         private async void buttonGetKLineIdx_ClickAsync(object sender, EventArgs e)
@@ -187,9 +250,40 @@ namespace Demo1
             {
                 return;
             }
-            var client = new RESTClient4Market(comboBoxMktServer.Text);
-            var ret = await client.GetHistKLineAsync(comboBoxMktIndex.Text, typ, beginSec, offset, count);
-            LOG($"[GetHistKLine] << {Helper.MyJsonMarshal(ret)} \r\n");
+
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetHistKLineAsync(comboBoxMktIndex.Text, typ, beginSec, offset, count);
+                LOG($"[GetHistKLine] << {Helper.MyJsonMarshal(ret)} \r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
+        }
+
+        private async void buttonGetAssetEx_ClickAsync(object sender, EventArgs e)
+        {
+            if (comboBoxMktServer.Text.Length < 4) return;
+
+            try
+            {
+                var client = new RESTClient4Market(comboBoxMktServer.Text);
+                var ret = await client.GetAssetExAsync();
+
+                LOG($"[GetAssetEx] <<");
+                foreach (var item in ret)
+                {
+                    LOG($"{Helper.MyJsonMarshal(item)}\r\n");
+                }
+                LOG($"========\r\n");
+            }
+            catch (Exception ex)
+            {
+                LOG("[ERROR] Exception: " + ex.Message + "\r\n");
+            }
+
         }
     }
 }

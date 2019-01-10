@@ -118,6 +118,7 @@
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.textBoxOUT2 = new System.Windows.Forms.TextBox();
+            this.buttonGetAssetEx = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -170,6 +171,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.buttonGetAssetEx);
             this.tabPage1.Controls.Add(this.button17);
             this.tabPage1.Controls.Add(this.label12);
             this.tabPage1.Controls.Add(this.label5);
@@ -1107,6 +1109,16 @@
             this.textBoxOUT2.Size = new System.Drawing.Size(1166, 175);
             this.textBoxOUT2.TabIndex = 5;
             // 
+            // buttonGetAssetEx
+            // 
+            this.buttonGetAssetEx.Location = new System.Drawing.Point(164, 45);
+            this.buttonGetAssetEx.Name = "buttonGetAssetEx";
+            this.buttonGetAssetEx.Size = new System.Drawing.Size(140, 23);
+            this.buttonGetAssetEx.TabIndex = 36;
+            this.buttonGetAssetEx.Text = "获取交易对扩展属性";
+            this.buttonGetAssetEx.UseVisualStyleBackColor = true;
+            this.buttonGetAssetEx.Click += new System.EventHandler(this.buttonGetAssetEx_ClickAsync);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1223,6 +1235,7 @@
         private System.Windows.Forms.CheckBox checkBox_onWallet;
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button18;
+        private System.Windows.Forms.Button buttonGetAssetEx;
     }
 }
 
