@@ -93,7 +93,7 @@
                 "Mult": 0.0001,                         // 合约乘数
                 "OpenInterest": 12718,                  // 最大持仓量
                 "OrderMaxQty": 10000000.0,              // 最大委托量
-                "OrderMinVal": 0.0001,                  // 委托的最小价值
+                "OrderMinQty": 1.0,                     // 最小委托量
                 "PosLmtStart": 1000000000,
                 "PosOpenRatio": 1,
                 "PrzMFairBasis": 27,
@@ -1090,7 +1090,7 @@ type AssetEx struct {
 | 14      |  WILLFILL     | 对于PostOnly，本委托会成交 |
 | 15      |  EXECUTE_FAIL     | 对FillOrKill委托，这表示执行撮合失败 |
 | 16      |  --UNUSED--     | --UNUSED-- |
-| 17      |  VAL_TOO_SMALL     | 委托价值太小 |
+| 17      |  ORDQTY_TOO_BIG_TOO_SMALL     | 委托价值太小 |
 | 18      |  EXCEED_LIMIT_PRZ_QTY     | 价格或者数量超出限制 |
 | 19      |  DENYOPEN_BY_POS     | 仓位超出限制 |
 | 20      |  DENYOPEN_BY_RD     | 禁止开仓 |

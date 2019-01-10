@@ -19,7 +19,7 @@
         WILLFILL = 14,              // 对于PostOnly，本委托会成交
         EXECUTE_FAIL = 15,          // 对FillOrKill委托，这表示执行撮合失败
         UNUSED_______EXCEED_LIMIT_MINVAL = 16,  // 超过限制
-        VAL_TOO_SMALL = 17,         // 委托价值太小
+        ORDQTY_TOO_BIG_TOO_SMALL = 17,          // 委托价值太小
         EXCEED_LIMIT_PRZ_QTY = 18,  // 价格或者数量超出限制
         DENYOPEN_BY_POS = 19,       // 仓位超出限制
         DENYOPEN_BY_RD = 20,        // 禁止开仓

@@ -41,11 +41,11 @@ GMEX官方的生产环境：
             "PrzMinInc":0.05,
             "PrzMax":1000000,
             "OrderMaxQty":10000000,
+            "OrderMinQty":1,
             "LotSz":1,
             "PrzM":244.8799999999999954525264911353588104248046875,
             "MIR":0.07,
             "MMR":0.05,
-            "OrderMinVal":0,
             "PrzLatest":244.95,
             "OpenInterest":2181200,
             "PrzIndex":244.8863,
@@ -71,9 +71,9 @@ GMEX官方的生产环境：
             "FundingTolerance": 59,       // 偏移宽容度
             "FundingFeeR": 60             // Funding结算佣金
         },
-        {"Sym":"BTC1812","Beg":1,"Expire":1545984000000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6731.3100000000004001776687800884246826171875,"MIR":0.07,"MMR":0.05,"OrderMinVal":0,"PrzLatest":6731.0,"OpenInterest":3431840,"PrzIndex":6737.3525,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1545980400000},
-        {"Sym":"ETH1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.05,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":244.19999999999998863131622783839702606201171875,"MIR":0.07,"MMR":0.05,"OrderMinVal":0,"PrzLatest":244.20,"OpenInterest":4500733,"PrzIndex":244.8863,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"ETH","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"ETH","QuoteCoin":"ETH","SettleR":0.0005,"DenyOpenAfter":1538118000000},
-        {"Sym":"BTC1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6727.5500000000001818989403545856475830078125,"MIR":0.07,"MMR":0.05,"OrderMinVal":0,"PrzLatest":6728.0,"OpenInterest":1451134,"PrzIndex":6737.3525,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1538118000000}
+        {"Sym":"BTC1812","Beg":1,"Expire":1545984000000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6731.3100000000004001776687800884246826171875,"MIR":0.07,"MMR":0.05,"PrzLatest":6731.0,"OpenInterest":3431840,"PrzIndex":6737.3525,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1545980400000},
+        {"Sym":"ETH1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.05,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":244.19999999999998863131622783839702606201171875,"MIR":0.07,"MMR":0.05,"PrzLatest":244.20,"OpenInterest":4500733,"PrzIndex":244.8863,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"ETH","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"ETH","QuoteCoin":"ETH","SettleR":0.0005,"DenyOpenAfter":1538118000000},
+        {"Sym":"BTC1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6727.5500000000001818989403545856475830078125,"MIR":0.07,"MMR":0.05,"PrzLatest":6728.0,"OpenInterest":1451134,"PrzIndex":6737.3525,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1538118000000}
     ]
 }
 ```
@@ -98,11 +98,11 @@ type AssetD struct {
     PrzMinInc           float64 // 最小的价格变化
     PrzMax              float64 // 最大委托价格
     OrderMaxQty         float64 // 最大委托数量
+    OrderMinQty         float64 // 最小委托数量
     LotSz               float64 // 最小合约数量,每次买卖的合约数量必须是LotSz的倍数,当前只支持为1;
     PrzM                float64 // 标记价格
     MIR                 float64 // 起始保证金率
     MMR                 float64 // 维持保证金率
-    OrderMinVal         float64 // 委托的最小价值
     PrzLatest           float64 // 最新成交价格
     TotalVol            float64 // 总交易量
     OpenInterest        int64   // 持仓量
@@ -155,7 +155,6 @@ type AssetEx struct {
     Sym  string  `json:"Sym"`
     // 手续费计费方法
     FM FeeMethod `json:"FM,omitempty"`
-    // 尚未支持
     // 手续费，货币符号，如果未指定，则现货：按照收入额进行收取。期货：按照SettleCoin进行。
     // 如果指定了FeeCoin则从该币种钱包内进行扣除。注意到，如果该钱包余额不足，则依旧使用SettleCoin进行
     FeeCoin string `json:"FeeCoin,omitempty"`
@@ -183,6 +182,10 @@ type AssetEx struct {
     LmtNumAsk uint64 `json:"LmtNumAsk,omitempty"`
     // 买入卖出总次数
     LmtNumBidAsk uint64 `json:"LmtNumBidAsk,omitempty"`
+    // 委托的买价偏离盘口比例(小数)
+    BidPrzR float64 `json:"BidPrzR,omitempty"`
+    // 委托的卖价偏离盘口比例(小数)
+    AskPrzR float64 `json:"AskPrzR,omitempty"`
     // 从0点开始，在每天的什么时间，开始重置统计值(绝对时间,毫秒)
     SumAt uint64 `son:"SumAt,omitempty"`
     // 重置间隔
@@ -477,11 +480,11 @@ type AssetEx struct {
             "PrzMinInc":0.05,
             "PrzMax":1000000,
             "OrderMaxQty":10000000,
+            "OrderMinQty":1,
             "LotSz":1,
             "PrzM":245.330000000000012505552149377763271331787109375,
             "MIR":0.07,
             "MMR":0.05,
-            "OrderMinVal":0,
             "PrzLatest":245.35,
             "OpenInterest":2181137,
             "PrzIndex":244.9823,
@@ -500,9 +503,9 @@ type AssetEx struct {
             "SettleR":0.0005,
             "DenyOpenAfter":1545980400000
         },
-        {"Sym":"BTC1812","Beg":1,"Expire":1545984000000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6725.75,"MIR":0.07,"MMR":0.05,"OrderMinVal":0,"PrzLatest":6724.5,"OpenInterest":3431245,"PrzIndex":6729.2552,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1545980400000},
-        {"Sym":"ETH1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.05,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":244.650000000000005684341886080801486968994140625,"MIR":0.07,"MMR":0.05,"OrderMinVal":0,"PrzLatest":244.65,"OpenInterest":4501232,"PrzIndex":244.9823,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"ETH","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"ETH","QuoteCoin":"ETH","SettleR":0.0005,"DenyOpenAfter":1538118000000},
-        {"Sym":"BTC1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6726.8000000000001818989403545856475830078125,"MIR":0.07,"MMR":0.05,"OrderMinVal":0,"PrzLatest":6724.0,"OpenInterest":1449455,"PrzIndex":6729.2552,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1538118000000}
+        {"Sym":"BTC1812","Beg":1,"Expire":1545984000000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6725.75,"MIR":0.07,"MMR":0.05,"PrzLatest":6724.5,"OpenInterest":3431245,"PrzIndex":6729.2552,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1545980400000},
+        {"Sym":"ETH1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.05,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":244.650000000000005684341886080801486968994140625,"MIR":0.07,"MMR":0.05,"PrzLatest":244.65,"OpenInterest":4501232,"PrzIndex":244.9823,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"ETH","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"ETH","QuoteCoin":"ETH","SettleR":0.0005,"DenyOpenAfter":1538118000000},
+        {"Sym":"BTC1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6726.8000000000001818989403545856475830078125,"MIR":0.07,"MMR":0.05,"PrzLatest":6724.0,"OpenInterest":1449455,"PrzIndex":6729.2552,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1538118000000}
     ]
 }
 ```
@@ -1199,7 +1202,7 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 | 14      |  WILLFILL     | 对于PostOnly，本委托会成交 |
 | 15      |  EXECUTE_FAIL     | 对FillOrKill委托，这表示执行撮合失败 |
 | 16      |  --UNUSED--     | --UNUSED-- |
-| 17      |  VAL_TOO_SMALL     | 委托价值太小 |
+| 17      |  ORDQTY_TOO_BIG_TOO_SMALL     | 委托价值太小 |
 | 18      |  EXCEED_LIMIT_PRZ_QTY     | 价格或者数量超出限制 |
 | 19      |  DENYOPEN_BY_POS     | 仓位超出限制 |
 | 20      |  DENYOPEN_BY_RD     | 禁止开仓 |

@@ -82,6 +82,16 @@ namespace Gmex.API.Models
         public UInt64 LmtNumAsk { get; set; }
 
         /// <summary>
+        /// 委托的买价偏离盘口比例(小数)
+        /// </summary>
+        public decimal BidPrzR { get; set; }
+
+        /// <summary>
+        /// 委托的卖价偏离盘口比例(小数)
+        /// </summary>
+        public decimal AskPrzR { get; set; }
+
+        /// <summary>
         /// 买入卖出总次数
         /// </summary>
         public UInt64 LmtNumBidAsk { get; set; }

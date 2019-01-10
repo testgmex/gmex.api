@@ -48,15 +48,15 @@ namespace Gmex.API.Models
         public decimal OrderMaxQty { get; set; }
 
         /// <summary>
+        /// 委托的最小数量
+        /// </summary>
+        public decimal OrderMinQty { get; set; }
+
+        /// <summary>
         /// 最小合约数量,当前只支持为1;
         /// </summary>
         public decimal LotSz { get; set; }
-
-        /// <summary>
-        /// 委托的最小价值
-        /// </summary>
-        public decimal OrderMinVal { get; set; }
-
+       
         /// <summary>
         /// 标记价格
         /// </summary>
