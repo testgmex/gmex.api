@@ -1334,4 +1334,5 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 | 34      |  PRZ_TOO_LOW     | 超出最小价格限制 |
 | 35      |  EXCEED_TRADE_VOL     | 超出交易量限制 |
 | 36      |  EXCEED_TRADE_COUNT     | 超出交易次数限制 |
+| 37      |  EXCEED_ASK_BID_PRZ_RATE     | 委托价格 超过盘口最新价格偏离 |
 | 64      |  NO_DEFAULT_RISKLIMIT     | 没有指定风险限额 |

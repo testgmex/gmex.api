@@ -39,6 +39,7 @@
         PRZ_TOO_LOW = 34,			// 超出最小价格闲置
         EXCEED_TRADE_VOL = 35,		// 超出交易量限制
         EXCEED_TRADE_COUNT = 36,	// 超出交易次数限制
+        EXCEED_ASK_BID_PRZ_RATE = 37, // 委托价格 超过盘口最新价格偏离
         NO_DEFAULT_RISKLIMIT = 64,  // 没有指定风险限额
     }
 }
