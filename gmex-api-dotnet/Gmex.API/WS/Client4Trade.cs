@@ -352,6 +352,30 @@ namespace Gmex.API.WS
         }
 
         /// <summary>
+        /// 查询交易对的扩展属性
+        /// </summary>
+        /// <param name="AccTyp"></param>
+        /// <param name="Sym"></param>
+        /// <param name="cb"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task REQ_GetAssetExAsync(int AccTyp, string Sym, Action<int, Models.AssetEx> cb, CancellationToken cancellationToken)
+        {
+            var req = new Gmex.API.WS.WsTradeMessageRequest("GetAssetEx",
+                new Dictionary<string, string>() { { "AId", this._uid + AccTyp.ToString("D2") }, { "Sym", Sym} }
+                );
+            await this.SendRequestAsync(req, (code, data) =>
+            {
+                Models.AssetEx ex = null;
+                var obj = data as Newtonsoft.Json.Linq.JObject;
+                if (obj!=null)
+                    ex = obj.ToObject<Models.AssetEx>();
+                cb(code, ex);
+            },
+            cancellationToken);
+        }
+
+        /// <summary>
         /// 查询钱包信息
         /// </summary>
         /// <param name="AccTyp"></param>
@@ -410,7 +434,7 @@ namespace Gmex.API.WS
         }
 
         /// <summary>
-        /// 查询当前有效的保单
+        /// 查询当前有效的报单
         /// </summary>
         /// <param name="AccTyp"></param>
         /// <param name="cb"></param>
@@ -496,7 +520,7 @@ namespace Gmex.API.WS
         }
 
         /// <summary>
-        /// 资金中心钱包查询
+        /// 查询资金中心钱包信息
         /// </summary>
         /// <param name="cb"></param>
         /// <param name="cancellationToken"></param>
@@ -521,7 +545,7 @@ namespace Gmex.API.WS
         }
 
         /// <summary>
-        /// 查询最近的历史保单
+        /// 查询最近的历史报单
         /// NOTE： 这里只提供最近100条记录，更多信息请去网站下载。
         /// </summary>
         /// <param name="AccTyp"></param>

@@ -48,13 +48,13 @@ namespace Gmex.API.Models
         public string WId { get; set; }
 
         /// <summary>
-        /// 服务器端为其分配的ID
+        /// 服务器端为其分配的报单ID
         /// </summary>
         [JsonProperty(Order = 5)]
         public string OrdId { get; set; }
 
         /// <summary>
-        /// 客户端为其分配的ID
+        /// 客户端为其分配的报单ID
         /// </summary>
         [JsonProperty(Order = 6)]
         public string COrdId { get; set; }

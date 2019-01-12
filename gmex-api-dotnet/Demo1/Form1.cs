@@ -863,7 +863,7 @@ namespace Demo1
                 LOG("[WARN] market client is not connected!\r\n");
                 return;
             }
-            await cli4mkt.REQ_GetAssetDAsync((code, instruments) =>
+            await cli4mkt.REQ_GetAssetExAsync((code, instruments) =>
             {
 
                 UI_ACTION(() =>
