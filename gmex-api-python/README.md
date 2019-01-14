@@ -12,8 +12,9 @@ REST 部分暂时没有示例，其都是简单的http post请求，参考js或d
 
 ==========
 pipenv --three
-pipenv lock
-pipenv sync
+pipenv install --dev
+pipenv update
+
 pipenv shell
 
 python main.py
