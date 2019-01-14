@@ -2,6 +2,7 @@
 
 import logging
 import time
+import os.path
 import consts
 
 from gmex_api_lib import GmexTradeWebsocket, GmexMarketWebsocket
@@ -89,28 +90,19 @@ def callback_on_mkt_request_response(_, code, data):
 
 def sample_main():
     cfg = {
-        'prod': {
-            'trd_ws_url': consts.GMEX_PROD_TRADE_WEBSOCKET_URL,
-            'mkt_ws_url': consts.GMEX_PROD_MARKET_WEBSOCKET_URL,
-            "user_name": "hexiaoyuan@126.com",
-            "api_key": "2OwAA4LU2crucWJhwxrNrYWcFEg",
-            "api_secret": "hJwAAwdY2cnc5FokcbOzWC874j4myd%DgDHfTb4Ou9mgb4JnUVxxrDVE"
-        },
         'simgo': {
             'trd_ws_url': consts.GMEX_SIMGO_TRADE_WEBSOCKET_URL,
             'mkt_ws_url': consts.GMEX_SIMGO_MARKET_WEBSOCKET_URL,
             'user_name': 'hexiaoyuan@126.com',
             'api_key': 'dNwAAB85TNjiDsDGT7LEOxhZnBN4',
             'api_secret': 'dPQAAHJ2msQ4cLEyT2dgOsYV2H$EyJ3aaMRk9k1NoZg$WE1g35s2nnQyh'
-        },
-        't03': {
-            'trd_ws_url': 'ws://192.168.2.70:50301/v1/trade',
-            'mkt_ws_url': 'ws://192.168.2.70:20080/v1/market',
-            'user_name': 'hexiaoyuan@126.com',
-            'api_key': 'nTAAAgzY19NQjFsanxrsuDIXsBdQ',
-            'api_secret': '8UQAAcLHUT1NGWNinNrtxBmE7j$GadAfYMxm6yC7eMZzCmhMdzNoYDbg'
         }
     }
+
+    user_cfg_fname = 'user_cfg.json'
+    if os.path.isfile(user_cfg_fname):
+        json_data=open('user_cfg.json').read()
+        cfg = my_json_unmarshal(json_data)
 
     env = 'simgo'
     trd_ws = GmexTradeWebsocket(cfg[env]['trd_ws_url'],
