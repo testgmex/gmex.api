@@ -10,3 +10,12 @@ REST 部分暂时没有示例，其都是简单的http post请求，参考js或d
 
 有啥好的建议和想法，请email我<hexiaoyuan@126.com>
 
+==========
+pipenv --three
+pipenv lock
+pipenv sync
+pipenv shell
+
+python main.py
+
+==========
