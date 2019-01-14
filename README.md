@@ -30,7 +30,7 @@ git clone https://github.com/hexiaoyuan/gmex.api.git your-gmex-api
 
 + gmex-api-python
 
-  TODO
+  暂时只实现了 Wetbsocket 方式的demo。
 
 + gmex-api-php
 
