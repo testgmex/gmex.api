@@ -3,7 +3,6 @@
 *NOTE*
   这里是个人收集整理的版本，非官方正式版。
   官方请认准： https://www.gmex.io
-  测试：https://www.baidu.com
 
 
 ### clone
